@@ -21,6 +21,7 @@ public:
     GameObject(SDL_Renderer*, const char*);
     ~GameObject();
 
+	void start();
 	void update();
 
 	SDL_Texture* get_texture() { return texture; }
