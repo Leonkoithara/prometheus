@@ -2,7 +2,7 @@
 #define GAME_MANAGER
 
 #include <iostream>
-#include <vector>
+#include <unordered_map>
 #include <SDL2/SDL.h>
 
 #include "game_object.h"
@@ -13,7 +13,7 @@ private:
 	bool running;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
-	std::vector<GameObject> game_objects;
+	std::unordered_map<const char*, GameObject*> game_objects;
 public:
 	GameManager() {}
 	~GameManager() {}
@@ -24,9 +24,10 @@ public:
 	void render();
 	void clean();
 
-	void instantiate_game_object(const char*);
+	void instantiate_game_object(const char*, const char*);
 
 	bool get_running_stat() { return running; }
+	GameObject* get_obj_by_name(const char *);
 };
 
 #endif
