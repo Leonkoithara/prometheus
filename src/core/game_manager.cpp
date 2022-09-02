@@ -1,6 +1,8 @@
 #include "game_manager.h"
+#include "SDL_rect.h"
 #include "SDL_render.h"
 #include "game_object.h"
+#include <cstring>
 
 void GameManager::init(const char *title, int xpos, int ypos, int width,
                          int height, bool full_screen)
@@ -44,8 +46,8 @@ void GameManager::event_handler()
 
 void GameManager::update()
 {
-	for (auto &i : game_objects) {
-	    i.update();
+	for (auto it : game_objects) {
+	    it.second->update();
 	}
 }
 
@@ -53,13 +55,11 @@ void GameManager::render()
 {
 	SDL_RenderClear(renderer);
 
-	for (auto &i : game_objects) {
-		SDL_Rect dest;
-		dest.x = i.get_position().x;
-		dest.y = i.get_position().y;
-		dest.h = i.get_size().x;
-		dest.w = i.get_size().y;
-		SDL_RenderCopy(renderer, i.get_texture(), NULL, &dest);
+	for (auto it : game_objects) {
+		it.second->set_render_props();
+		SDL_Rect src = it.second->get_src_render_rect();
+		SDL_Rect dest = it.second->get_dest_render_rect();
+		SDL_RenderCopy(renderer, it.second->get_texture(), &src, &dest);
 	}
 
 	SDL_RenderPresent(renderer);
@@ -73,8 +73,17 @@ void GameManager::clean()
 	std::cout << "Game cleaned" << std::endl;
 }
 
-void GameManager::instantiate_game_object(const char *texturefile)
+void GameManager::instantiate_game_object(const char *obj_name, const char *texturefile)
 {
-	game_objects.push_back(GameObject(renderer, texturefile));
+	game_objects[obj_name] = new GameObject(obj_name, renderer, texturefile);
 	std::cout << "Object instantiated successfully" << std::endl;
+}
+
+GameObject* GameManager::get_obj_by_name(const char *name)
+{
+	auto it = game_objects.find(name);
+	if (it == game_objects.end())
+	    return NULL;
+
+	return it->second;
 }

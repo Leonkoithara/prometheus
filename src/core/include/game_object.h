@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_rect.h>
 
 typedef struct
 {
@@ -14,18 +15,26 @@ typedef struct
 class GameObject
 {
 private:
+	const char *name;
 	vec3D position = {30, 30, 30};
-	vec3D size = {50, 50, 50};
+	SDL_Rect src_rect = {0, 0, 0, 0};
+	SDL_Rect dest_rect = {0, 0, 0, 0};
 	SDL_Texture *texture;
 public:
-    GameObject(SDL_Renderer*, const char*);
+    GameObject(const char*, SDL_Renderer*, const char*);
     ~GameObject();
 
-	void start();
-	void update();
+	virtual void start() {}
+	virtual void update() { position.x += 0.01; }
 
+	void set_render_props(int tex_x1 = 0, int tex_y1 = 0, int h = 0, int w = 0, int scale_x = 1, int scale_y = 1);
+
+	const char* get_name() { return name; }
 	SDL_Texture* get_texture() { return texture; }
-	vec3D get_size() { return size; }
+	SDL_Rect get_src_render_rect() { return src_rect; }
+	SDL_Rect get_dest_render_rect() { return dest_rect; }
 	vec3D get_position() { return position; }
+
+	void set_position(vec3D pos) { position = pos; }
 };
 #endif
