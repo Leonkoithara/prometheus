@@ -25,7 +25,7 @@ public:
     ~GameObject();
 
 	virtual void start() {}
-	virtual void update() { position.x += 0.01; }
+	virtual void update() {}
 
 	void set_render_props(int tex_x1 = 0, int tex_y1 = 0, int h = 0, int w = 0, int scale_x = 1, int scale_y = 1);
 
