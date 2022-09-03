@@ -1,36 +1,17 @@
 #include "game_manager.h"
-#include "SDL_rect.h"
-#include "SDL_render.h"
 #include "game_object.h"
-#include <cstring>
+#include "scene.h"
 
-void GameManager::init(const char *title, int xpos, int ypos, int width,
-                         int height, bool full_screen)
+#include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_render.h>
+
+void GameManager::init()
 {
-	int flags = 0;
-	if (full_screen) {
-		flags = SDL_WINDOW_FULLSCREEN;
-	}
-	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-	{
-		std::cout << "SDL Initialization failed" << std::endl;
-		exit(1);
-	}
-
-	window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
-	if (!window) {
-		std::cout << "Window creation failed" << std::endl;
-		exit(1);
-	}
-
-	renderer = SDL_CreateRenderer(window, -1, 0);
-	if (!renderer) {
-		std::cout << "Renderer could not be created" << std::endl;
-		exit(1);
-	}
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
 	running = true;
+	Scene *scn = new Scene("default");
+	
+	scn->init("Default Window", 100, 100, 640, 480, false);
+	scenes["default"] = scn;
 }
 
 void GameManager::event_handler()
@@ -46,43 +27,51 @@ void GameManager::event_handler()
 
 void GameManager::update()
 {
-	for (auto it : game_objects) {
+	for (auto &it : scenes) {
 	    it.second->update();
 	}
 }
 
 void GameManager::render()
 {
-	SDL_RenderClear(renderer);
-
-	for (auto it : game_objects) {
-		it.second->set_render_props();
-		SDL_Rect src = it.second->get_src_render_rect();
-		SDL_Rect dest = it.second->get_dest_render_rect();
-		SDL_RenderCopy(renderer, it.second->get_texture(), &src, &dest);
-	}
-
-	SDL_RenderPresent(renderer);
+	for (auto it : scenes)
+		it.second->render();
 }
 
 void GameManager::clean()
 {
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
+	for (auto &it : scenes)
+		it.second->clean();	
 	SDL_Quit();
 	std::cout << "Game cleaned" << std::endl;
 }
 
-void GameManager::instantiate_game_object(const char *obj_name, const char *texturefile)
+void GameManager::instantiate_game_object(std::string scene_name, std::string obj_name, float xpos, float ypos)
 {
-	game_objects[obj_name] = new GameObject(obj_name, renderer, texturefile);
-	std::cout << "Object instantiated successfully" << std::endl;
+	auto it = scenes.find(scene_name);
+	if (it != scenes.end())
+	{
+		it->second->instantiate_game_object(obj_name, xpos, ypos);
+		std::cout << "Object instantiated successfully" << std::endl;
+	}
+	else
+		std::cout << "Scene not found" << std::endl;
 }
 
-GameObject* GameManager::get_obj_by_name(const char *name)
+void GameManager::set_texturefile_game_obj(std::string scene_name, std::string obj_name, std::string filename)
 {
-	auto it = game_objects.find(name);
-	if (it == game_objects.end())
+	auto it = scenes.find(scene_name);
+	if (it != scenes.end())
+	{
+		it->second->set_game_obj_texture(obj_name, filename);
+		std::cout << "Texture set successfully" << std::endl;
+	}
+}
+
+Scene* GameManager::get_scene_by_name(std::string name)
+{
+	auto it = scenes.find(name);
+	if (it == scenes.end())
 	    return NULL;
 
 	return it->second;
