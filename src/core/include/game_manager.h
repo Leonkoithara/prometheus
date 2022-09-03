@@ -2,10 +2,12 @@
 #define GAME_MANAGER
 
 #include <iostream>
+#include <string>
 #include <unordered_map>
 #include <SDL2/SDL.h>
 
 #include "game_object.h"
+#include "scene.h"
 
 class GameManager
 {
@@ -13,21 +15,22 @@ private:
 	bool running;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
-	std::unordered_map<const char*, GameObject*> game_objects;
+	std::unordered_map<std::string, Scene*> scenes;
 public:
 	GameManager() {}
 	~GameManager() {}
 
-	void init(const char *, int, int, int, int, bool);
+	void init();
 	void update();
 	void event_handler();
 	void render();
 	void clean();
 
-	void instantiate_game_object(const char*, const char*);
+	void instantiate_game_object(std::string, std::string, float, float);
+	void set_texturefile_game_obj(std::string, std::string, std::string);
 
 	bool get_running_stat() { return running; }
-	GameObject* get_obj_by_name(const char *);
+	Scene* get_scene_by_name(std::string);
 };
 
 #endif
