@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "game_object.h"
+#include "camera.h"
 class Scene
 {
 private:
@@ -21,7 +22,7 @@ public:
 	void init(const char*, int, int, int, int, bool);
 	void instantiate_game_object(std::string, float, float);
 	void update();
-	void render();
+	void render(Camera);
 	void clean();
 
 	void set_active_scene(bool active) { active_scene = active; }

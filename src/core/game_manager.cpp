@@ -35,7 +35,7 @@ void GameManager::update()
 void GameManager::render()
 {
 	for (auto it : scenes)
-		it.second->render();
+		it.second->render(camera);
 }
 
 void GameManager::clean()
