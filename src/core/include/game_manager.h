@@ -16,7 +16,6 @@ private:
 	bool running;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
-	Camera camera;
 	std::unordered_map<std::string, Scene*> scenes;
 public:
 	GameManager() {}

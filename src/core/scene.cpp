@@ -62,7 +62,7 @@ void Scene::update()
 	}
 }
 
-void Scene::render(Camera cam)
+void Scene::render()
 {
 	if (active_scene)
 	{
@@ -74,7 +74,7 @@ void Scene::render(Camera cam)
 				continue;
 
 		    SDL_Rect src = it.second->get_src_render_rect();
-			SDL_Rect dest = cam.get_destination_rect(it.second->get_position(), src.h, src.w);
+			SDL_Rect dest = camera.get_destination_rect(it.second->get_position(), src.h, src.w);
 			SDL_RenderCopy(renderer, it.second->get_texture(), &src, &dest);
 		}
 		

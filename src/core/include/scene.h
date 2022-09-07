@@ -6,6 +6,8 @@
 
 #include "game_object.h"
 #include "camera.h"
+
+
 class Scene
 {
 private:
@@ -15,6 +17,7 @@ private:
 	std::unordered_map<std::string, GameObject*> game_objects;
 	SDL_Renderer *renderer;
 	SDL_Window *window;
+	Camera camera;
 public:
 	Scene(const char*);
 	~Scene();
@@ -22,7 +25,7 @@ public:
 	void init(const char*, int, int, int, int, bool);
 	void instantiate_game_object(std::string, float, float);
 	void update();
-	void render(Camera);
+	void render();
 	void clean();
 
 	void set_active_scene(bool active) { active_scene = active; }
