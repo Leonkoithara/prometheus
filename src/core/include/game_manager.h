@@ -8,6 +8,7 @@
 
 #include "game_object.h"
 #include "scene.h"
+#include "camera.h"
 
 class GameManager
 {

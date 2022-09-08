@@ -4,7 +4,7 @@ int main(int argc, char *argv[])
 {
 	GameManager gm;
 	gm.init();
-	gm.instantiate_game_object("default", "pacman", 30, 30);
+	gm.instantiate_game_object("default", "pacman", 0, 0);
 	gm.set_texturefile_game_obj("default", "pacman", "res/textures/sprite1.png");
 
 	while (gm.get_running_stat()) {
