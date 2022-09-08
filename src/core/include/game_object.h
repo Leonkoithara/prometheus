@@ -1,6 +1,8 @@
 #ifndef GAME_OBJECT
 #define GAME_OBJECT
 
+#include "type_structs.h"
+
 #include <iostream>
 #include <string>
 
@@ -8,13 +10,6 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_rect.h>
 
-
-typedef struct
-{
-	float x;
-	float y;
-	float z;
-}vec3D;
 
 class GameObject
 {
