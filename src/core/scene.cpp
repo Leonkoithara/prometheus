@@ -6,14 +6,14 @@
 #include "scene.h"
 #include "game_object.h"
 
-Scene::Scene(const char *scene_name)
+Scene::Scene(std::string scene_name)
 {
 	name = scene_name;
 	update_scene = true;
 	active_scene = true;
 }
 
-void Scene::init(const char *title, int xpos, int ypos, int width, int height, bool full_screen)
+void Scene::init(std::string title, int xpos, int ypos, int width, int height, bool full_screen)
 {
 	int flags = 0;
 	if (full_screen) {
@@ -25,7 +25,7 @@ void Scene::init(const char *title, int xpos, int ypos, int width, int height, b
 		exit(1);
 	}
 
-	window = SDL_CreateWindow(title, xpos, ypos, width, height, flags);
+	window = SDL_CreateWindow(title.c_str(), xpos, ypos, width, height, flags);
 	if (!window)
 	{
 		std::cout << "Window creation failed" << std::endl;
@@ -99,4 +99,13 @@ void Scene::set_game_obj_texture(std::string game_object_name, std::string filen
 	}
 	else
 		std::cout << "Game Object not found" << std::endl;
+}
+
+void Scene::add_game_object(std::string game_obj_name, GameObject *obj)
+{
+	auto it = game_objects.find(game_obj_name);
+	if (it == game_objects.end())
+	{
+		game_objects[game_obj_name] = obj;
+	}
 }
