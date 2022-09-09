@@ -19,6 +19,22 @@ void GameManager::event_handler()
 	SDL_Event event;
 	SDL_PollEvent(&event);
 	switch (event.type) {
+	case SDL_WINDOWEVENT:
+		Scene *scn;
+		for (auto it : scenes)
+		{
+		    if(it.second->get_window_id() == event.window.windowID)
+			{
+				scn = it.second;
+				break;
+			}
+		}
+		switch (event.window.event) {
+		case SDL_WINDOWEVENT_CLOSE:
+			scenes.erase(scn->get_scene_name());
+			scn->clean();
+		}
+		break;
 	case SDL_QUIT:
 		running = false;
 		break;
@@ -75,4 +91,18 @@ Scene* GameManager::get_scene_by_name(std::string name)
 	    return NULL;
 
 	return it->second;
+}
+
+void GameManager::add_game_object(std::string obj_name, GameObject *obj, std::string scene_name)
+{
+	Scene *scn = get_scene_by_name(scene_name);
+	scn->add_game_object(obj_name, obj);
+}
+
+void GameManager::add_empty_scene(std::string scene_name)
+{
+	Scene *scn = new Scene(scene_name);
+
+	scn->init(scene_name, 200, 100, 640, 480, false);
+	scenes[scene_name] = scn;
 }
