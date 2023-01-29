@@ -11,7 +11,7 @@
 class Scene
 {
 private:
-	const char *name;
+	std::string name;
 	bool update_scene;
 	bool active_scene;
 	std::unordered_map<std::string, GameObject*> game_objects;
@@ -19,10 +19,10 @@ private:
 	SDL_Window *window;
 	Camera camera;
 public:
-	Scene(const char*);
+	Scene(std::string);
 	~Scene();
 
-	void init(const char*, int, int, int, int, bool);
+	void init(std::string, int, int, int, int, bool);
 	void instantiate_game_object(std::string, float, float);
 	void update();
 	void render();
@@ -33,7 +33,11 @@ public:
 	void set_game_obj_texture(std::string, std::string);
 
 	GameObject* get_scene_game_obj(std::string);
-	const char* get_scene_name(){ return name; }
+	std::string get_scene_name(){ return name; }
+	int get_window_id() { return SDL_GetWindowID(window); }
+
+	void add_game_object(std::string, GameObject*);
+	void click_objects(int, int, int, bool);
 };
 
 #endif
