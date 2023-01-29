@@ -4,6 +4,7 @@
 #include <SDL_render.h>
 
 #include "scene.h"
+#include "button.h"
 #include "game_object.h"
 
 Scene::Scene(std::string scene_name)
@@ -38,7 +39,7 @@ void Scene::init(std::string title, int xpos, int ypos, int width, int height, b
 		std::cout << "Renderer could not be created" << std::endl;
 		exit(1);
 	}
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	active_scene = true;
 }
 
@@ -53,12 +54,40 @@ void Scene::instantiate_game_object(std::string game_obj_name, float pos_x, floa
 	}
 }
 
+void Scene::set_game_obj_texture(std::string game_object_name, std::string filename)
+{
+	auto it = game_objects.find(game_object_name);
+	if (it != game_objects.end())
+		it->second->set_texturefile(renderer, filename);
+	else
+		std::cout << "Game Object not found" << std::endl;
+}
+
+void Scene::click_objects(int xpos, int ypos, int button_id, bool unclick)
+{
+	int winw, winh;
+	SDL_GetWindowSize(window, &winw, &winh);
+	for (auto &it : game_objects ) {
+		Button *obj = dynamic_cast<Button*>(it.second);
+		if (obj == NULL)
+			continue;
+		if (obj->check_clicked(xpos-(winw/2), ypos-(winh/2)))
+		    obj->click_object(button_id, unclick);
+	}
+}
+
+void Scene::add_game_object(std::string game_obj_name, GameObject *obj)
+{
+	auto it = game_objects.find(game_obj_name);
+	if (it == game_objects.end())
+		game_objects[game_obj_name] = obj;
+}
+
 void Scene::update()
 {
 	if (update_scene) {
-	    for (auto &it : game_objects) {
+	    for (auto &it : game_objects)
 		    it.second->update();
-		}
 	}
 }
 
@@ -90,22 +119,3 @@ void Scene::clean()
 
 Scene::~Scene() {}
 
-void Scene::set_game_obj_texture(std::string game_object_name, std::string filename)
-{
-	auto it = game_objects.find(game_object_name);
-	if (it != game_objects.end())
-	{
-		it->second->set_texturefile(renderer, filename);
-	}
-	else
-		std::cout << "Game Object not found" << std::endl;
-}
-
-void Scene::add_game_object(std::string game_obj_name, GameObject *obj)
-{
-	auto it = game_objects.find(game_obj_name);
-	if (it == game_objects.end())
-	{
-		game_objects[game_obj_name] = obj;
-	}
-}
