@@ -33,7 +33,7 @@ public:
 	bool get_running_stat() { return running; }
 	Scene* get_scene_by_name(std::string);
 
-	void add_empty_scene(std::string);
+	void add_empty_scene(std::string, int, int, int, int);
 	void add_scene(std::string, Scene*) {}
 	void add_game_object(std::string, GameObject*, std::string);
 };

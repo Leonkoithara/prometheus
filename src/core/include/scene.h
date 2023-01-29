@@ -37,6 +37,7 @@ public:
 	int get_window_id() { return SDL_GetWindowID(window); }
 
 	void add_game_object(std::string, GameObject*);
+	void click_objects(int, int, int, bool);
 };
 
 #endif
