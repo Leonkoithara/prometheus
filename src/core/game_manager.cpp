@@ -2,12 +2,24 @@
 #include "game_object.h"
 #include "scene.h"
 
+#include <SDL_ttf.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 
 void GameManager::init()
 {
 	running = true;
+
+	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
+	{
+		std::cout << "SDL Initialization failed" << std::endl;
+		exit(1);
+	}
+
+	if(TTF_Init() < 0) {
+		std::cout << "Couldn't initialize TTF lib: " << TTF_GetError() << std::endl;
+		exit(1);
+	}
 }
 
 void GameManager::event_handler()
@@ -90,26 +102,19 @@ void GameManager::clean()
 	std::cout << "Game cleaned" << std::endl;
 }
 
-void GameManager::instantiate_game_object(std::string scene_name, std::string obj_name, float xpos, float ypos)
+GameObject* GameManager::instantiate_game_object(std::string scene_name, std::string obj_name, float xpos, float ypos)
 {
+	GameObject *obj;
 	auto it = scenes.find(scene_name);
 	if (it != scenes.end())
 	{
-		it->second->instantiate_game_object(obj_name, xpos, ypos);
+		obj = it->second->instantiate_game_object(obj_name, xpos, ypos);
 		std::cout << "Object instantiated successfully" << std::endl;
 	}
 	else
 		std::cout << "Scene not found" << std::endl;
-}
 
-void GameManager::set_texturefile_game_obj(std::string scene_name, std::string obj_name, std::string filename)
-{
-	auto it = scenes.find(scene_name);
-	if (it != scenes.end())
-	{
-		it->second->set_game_obj_texture(obj_name, filename);
-		std::cout << "Texture set successfully" << std::endl;
-	}
+	return obj;
 }
 
 Scene* GameManager::get_scene_by_name(std::string name)
