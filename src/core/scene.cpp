@@ -1,7 +1,9 @@
 #include <iostream>
 
+#include <SDL_image.h>
 #include <SDL_rect.h>
 #include <SDL_render.h>
+#include <SDL_ttf.h>
 
 #include "scene.h"
 #include "button.h"
@@ -19,11 +21,6 @@ void Scene::init(std::string title, int xpos, int ypos, int width, int height, b
 	int flags = 0;
 	if (full_screen) {
 		flags = SDL_WINDOW_FULLSCREEN;
-	}
-	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-	{
-		std::cout << "SDL Initialization failed" << std::endl;
-		exit(1);
 	}
 
 	window = SDL_CreateWindow(title.c_str(), xpos, ypos, width, height, flags);
@@ -43,7 +40,7 @@ void Scene::init(std::string title, int xpos, int ypos, int width, int height, b
 	active_scene = true;
 }
 
-void Scene::instantiate_game_object(std::string game_obj_name, float pos_x, float pos_y)
+GameObject* Scene::instantiate_game_object(std::string game_obj_name, float pos_x, float pos_y)
 {
 	auto it = game_objects.find(game_obj_name);
 	if (it == game_objects.end())
@@ -51,16 +48,9 @@ void Scene::instantiate_game_object(std::string game_obj_name, float pos_x, floa
 		GameObject *obj = new GameObject(game_obj_name);
 		obj->set_position({pos_x, pos_y, 0});
 		game_objects[game_obj_name] = obj;
+		return obj;
 	}
-}
-
-void Scene::set_game_obj_texture(std::string game_object_name, std::string filename)
-{
-	auto it = game_objects.find(game_object_name);
-	if (it != game_objects.end())
-		it->second->set_texturefile(renderer, filename);
-	else
-		std::cout << "Game Object not found" << std::endl;
+	return NULL;
 }
 
 void Scene::click_objects(int xpos, int ypos, int button_id, bool unclick)
@@ -91,6 +81,33 @@ void Scene::update()
 	}
 }
 
+void Scene::set_game_obj_texture(GameObject *obj)
+{
+	for (auto texture : obj->get_textures()) {
+
+		if (texture.second.second == NULL) {
+			SDL_Texture *tex;
+			if (texture.second.first == "button_text") {
+				Button *butt = dynamic_cast<Button*>(obj);
+				TTF_Font *sans = TTF_OpenFont("res/fonts/FreeSans.ttf", 24);
+				std::cout << TTF_GetError() << std::endl;
+				SDL_Color white = {225, 225, 225};
+				SDL_Surface *msg_surface = TTF_RenderText_Solid(sans, butt->get_text().c_str(), white);
+				tex = SDL_CreateTextureFromSurface(renderer, msg_surface);
+			}
+			else
+			{
+				SDL_Surface *surface = IMG_Load(texture.second.first.c_str());
+				tex = SDL_CreateTextureFromSurface(renderer, surface);
+				SDL_FreeSurface(surface);
+			}
+			obj->add_texture(tex, texture.first);
+		}
+
+	}
+	obj->set_render_rect_defaults();
+}
+
 void Scene::render()
 {
 	if (active_scene)
@@ -99,12 +116,19 @@ void Scene::render()
 		
 	    for (auto it : game_objects)
 		{
-			if (it.second->get_texture() == NULL)
-				continue;
-
+			for (auto itr : it.second->get_textures()) {
+			    if (itr.second.second == NULL) {
+				    set_game_obj_texture(it.second);
+					break;
+				}
+			}
 		    SDL_Rect src = it.second->get_src_render_rect();
 			SDL_Rect dest = camera.get_destination_rect(it.second->get_position(), src.h, src.w);
-			SDL_RenderCopy(renderer, it.second->get_texture(), &src, &dest);
+
+			auto textures = it.second->get_textures();
+			for (auto itr : textures) {
+			    SDL_RenderCopy(renderer, itr.second.second, &src, &dest);
+			}
 		}
 		
 		SDL_RenderPresent(renderer);
