@@ -8,4 +8,5 @@ target_link_libraries(
   core
   ${SDL2_LIBRARIES}
   SDL2_image
+  SDL2_ttf
 )
