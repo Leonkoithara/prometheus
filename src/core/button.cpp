@@ -1,11 +1,15 @@
+#include <SDL_rect.h>
+#include <SDL_surface.h>
+
 #include "button.h"
-#include "SDL_rect.h"
 #include "game_object.h"
 #include "type_structs.h"
+
 #include <ostream>
 
 
-Button::Button(std::string name) : GameObject(name) {
+Button::Button(std::string name) : GameObject(name)
+{
 	clicked = -1;
 }
 
@@ -42,6 +46,13 @@ void Button::onceclickevent(int buttonid)
 void Button::whileclickevent(int mouse)
 {
 	std::cout << "Click ongoing" << std::endl;
+}
+
+void Button::set_text(std::string text)
+{
+	int max = get_textures().end()->first;
+	this->text = text;
+	add_texturefile("button_text", max);
 }
 
 void Button::update()

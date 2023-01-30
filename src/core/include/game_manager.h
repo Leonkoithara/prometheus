@@ -27,8 +27,7 @@ public:
 	void render();
 	void clean();
 
-	void instantiate_game_object(std::string, std::string, float, float);
-	void set_texturefile_game_obj(std::string, std::string, std::string);
+	GameObject* instantiate_game_object(std::string, std::string, float, float);
 
 	bool get_running_stat() { return running; }
 	Scene* get_scene_by_name(std::string);
