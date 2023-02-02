@@ -8,7 +8,6 @@
 
 #include "game_object.h"
 #include "scene.h"
-#include "camera.h"
 
 class GameManager
 {
@@ -26,6 +25,7 @@ public:
 	void event_handler();
 	void render();
 	void clean();
+	void quit();
 
 	GameObject* instantiate_game_object(std::string, std::string, float, float);
 
@@ -33,8 +33,9 @@ public:
 	Scene* get_scene_by_name(std::string);
 
 	void add_empty_scene(std::string, int, int, int, int);
-	void add_scene(std::string, Scene*) {}
-	void add_game_object(std::string, GameObject*, std::string);
+	void add_scene(Scene*);
+	void add_game_object(GameObject*, std::string);
 };
 
+extern GameManager gm;
 #endif
