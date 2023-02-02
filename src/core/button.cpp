@@ -5,12 +5,13 @@
 #include "game_object.h"
 #include "type_structs.h"
 
-#include <ostream>
 
-
+void button_empty_callback(int x) {};
 Button::Button(std::string name) : GameObject(name)
 {
 	clicked = -1;
+	whileclickevent = &button_empty_callback;
+	onceclickevent = &button_empty_callback;
 }
 
 bool Button::check_clicked(int xpos, int ypos)
@@ -36,16 +37,6 @@ void Button::click_object(int button_id, bool unclick)
 		clicked = button_id;
 		onceclickevent(button_id);
 	}
-}
-
-void Button::onceclickevent(int buttonid)
-{
-	std::cout << "Clicked: " << get_name() << std::endl;
-}
-
-void Button::whileclickevent(int mouse)
-{
-	std::cout << "Click ongoing" << std::endl;
 }
 
 void Button::set_text(std::string text)
