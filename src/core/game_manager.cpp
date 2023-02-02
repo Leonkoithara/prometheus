@@ -6,6 +6,8 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 
+GameManager gm;
+
 void GameManager::init()
 {
 	running = true;
@@ -75,7 +77,7 @@ void GameManager::event_handler()
 	}
 	case SDL_QUIT:
 	{
-		running = false;
+		quit();
 		break;
 	}
 	}
@@ -102,6 +104,11 @@ void GameManager::clean()
 	std::cout << "Game cleaned" << std::endl;
 }
 
+void GameManager::quit()
+{
+	running = false;
+}
+
 GameObject* GameManager::instantiate_game_object(std::string scene_name, std::string obj_name, float xpos, float ypos)
 {
 	GameObject *obj;
@@ -126,10 +133,15 @@ Scene* GameManager::get_scene_by_name(std::string name)
 	return it->second;
 }
 
-void GameManager::add_game_object(std::string obj_name, GameObject *obj, std::string scene_name)
+void GameManager::add_game_object(GameObject *obj, std::string scene_name)
 {
 	Scene *scn = get_scene_by_name(scene_name);
-	scn->add_game_object(obj_name, obj);
+	scn->add_game_object(obj);
+}
+
+void GameManager::add_scene(Scene *scn)
+{
+	scenes[scn->get_scene_name()] = scn;
 }
 
 void GameManager::add_empty_scene(std::string scene_name, int xpos, int ypos, int width, int height)
