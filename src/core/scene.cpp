@@ -66,8 +66,9 @@ void Scene::click_objects(int xpos, int ypos, int button_id, bool unclick)
 	}
 }
 
-void Scene::add_game_object(std::string game_obj_name, GameObject *obj)
+void Scene::add_game_object(GameObject *obj)
 {
+	std::string game_obj_name = obj->get_name();
 	auto it = game_objects.find(game_obj_name);
 	if (it == game_objects.end())
 		game_objects[game_obj_name] = obj;
@@ -137,6 +138,9 @@ void Scene::render()
 
 void Scene::clean()
 {
+	for (auto &it : game_objects) {
+	    delete it.second;
+	}
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 }
