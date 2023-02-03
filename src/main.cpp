@@ -6,7 +6,6 @@
 
 int main(int argc, char *argv[])
 {
-	gm.init();
 	create_main_menu();
 
 	while (gm.get_running_stat()) {
@@ -15,7 +14,5 @@ int main(int argc, char *argv[])
 		gm.render();
 	}
 
-	gm.clean();
-	
 	return 0;
 }
