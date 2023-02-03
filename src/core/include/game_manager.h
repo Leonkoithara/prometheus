@@ -17,14 +17,12 @@ private:
 	SDL_Renderer *renderer;
 	std::unordered_map<std::string, Scene*> scenes;
 public:
-	GameManager() {}
-	~GameManager() {}
+	GameManager();
+	~GameManager();
 
-	void init();
 	void update();
 	void event_handler();
 	void render();
-	void clean();
 	void quit();
 
 	GameObject* instantiate_game_object(std::string, std::string, float, float);

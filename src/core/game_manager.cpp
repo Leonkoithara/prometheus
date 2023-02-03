@@ -8,7 +8,7 @@
 
 GameManager gm;
 
-void GameManager::init()
+GameManager::GameManager()
 {
 	running = true;
 
@@ -71,7 +71,7 @@ void GameManager::event_handler()
 		switch (event.window.event) {
 		case SDL_WINDOWEVENT_CLOSE:
 			scenes.erase(scn->get_scene_name());
-			scn->clean();
+			delete scn;
 		}
 		break;
 	}
@@ -94,14 +94,6 @@ void GameManager::render()
 {
 	for (auto it : scenes)
 		it.second->render();
-}
-
-void GameManager::clean()
-{
-	for (auto &it : scenes)
-		it.second->clean();	
-	SDL_Quit();
-	std::cout << "Game cleaned" << std::endl;
 }
 
 void GameManager::quit()
@@ -148,6 +140,14 @@ void GameManager::add_empty_scene(std::string scene_name, int xpos, int ypos, in
 {
 	Scene *scn = new Scene(scene_name);
 
-	scn->init(scene_name, xpos, ypos, width, height, false);
+	scn->create_window(scene_name, xpos, ypos, width, height, false);
 	scenes[scene_name] = scn;
+}
+
+GameManager::~GameManager()
+{
+	for (auto &it : scenes)
+		delete it.second;	
+	SDL_Quit();
+	std::cout << "Game cleaned" << std::endl;
 }

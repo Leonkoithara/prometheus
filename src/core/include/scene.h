@@ -22,11 +22,10 @@ public:
 	Scene(std::string);
 	~Scene();
 
-	void init(std::string, int, int, int, int, bool);
+	void create_window(std::string, int, int, int, int, bool);
 	GameObject* instantiate_game_object(std::string, float, float);
 	void update();
 	void render();
-	void clean();
 
 	void set_active_scene(bool active) { active_scene = active; }
 	void set_update_scene(bool update) { update_scene = update; }

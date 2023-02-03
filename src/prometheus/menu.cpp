@@ -7,14 +7,14 @@ void quit_game(int x) { gm.quit(); }
 void new_game(int x)
 {
 	Scene *game_start = new Scene("prometheus");
-	game_start->init("Prometheus", 100, 100, 640, 480, false);
+	game_start->create_window("Prometheus", 100, 100, 640, 480, false);
 	gm.add_scene(game_start);
 }
 
 void create_main_menu()
 {
 	Scene *main_menu = new Scene("main_menu");
-	main_menu->init("Main Menu", 100, 100, 640, 480, false);
+	main_menu->create_window("Main Menu", 100, 100, 640, 480, false);
 	
 	GameObject *title = new GameObject("title");
 	title->set_position({-180, -220});

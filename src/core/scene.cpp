@@ -16,7 +16,7 @@ Scene::Scene(std::string scene_name)
 	active_scene = true;
 }
 
-void Scene::init(std::string title, int xpos, int ypos, int width, int height, bool full_screen)
+void Scene::create_window(std::string title, int xpos, int ypos, int width, int height, bool full_screen)
 {
 	int flags = 0;
 	if (full_screen) {
@@ -136,14 +136,12 @@ void Scene::render()
 	}
 }
 
-void Scene::clean()
+Scene::~Scene()
 {
-	for (auto &it : game_objects) {
+	for (auto &it : game_objects)
 	    delete it.second;
-	}
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
-}
 
-Scene::~Scene() {}
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);  
+}
 
