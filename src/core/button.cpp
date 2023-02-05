@@ -28,15 +28,15 @@ bool Button::check_clicked(int xpos, int ypos)
 	return false;
 }
 
-void Button::click_object(int button_id, bool unclick)
+void Button::click_object(int button_id, bool click)
 {
-	if (unclick)
-	    clicked = -1;
-	else
+	if (click)
 	{
 		clicked = button_id;
 		onceclickevent(button_id);
 	}
+	else
+		clicked = -1;
 }
 
 void Button::set_text(std::string text)

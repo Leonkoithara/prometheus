@@ -1,10 +1,11 @@
+#include <SDL_rect.h>
+#include <SDL_render.h>
+#include <SDL_ttf.h>
+
 #include "game_manager.h"
 #include "game_object.h"
 #include "scene.h"
 
-#include <SDL_ttf.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
 
 GameManager gm;
 
@@ -18,7 +19,8 @@ GameManager::GameManager()
 		exit(1);
 	}
 
-	if(TTF_Init() < 0) {
+	if(TTF_Init() < 0)
+	{
 		std::cout << "Couldn't initialize TTF lib: " << TTF_GetError() << std::endl;
 		exit(1);
 	}
@@ -28,66 +30,57 @@ void GameManager::event_handler()
 {
 	SDL_Event event;
 	SDL_PollEvent(&event);
-	switch (event.type) {
-	case SDL_MOUSEBUTTONDOWN:
+	switch (event.type)
 	{
-		Scene *scn;
-		for (auto it : scenes)
-		{
-		    if(it.second->get_window_id() == event.window.windowID)
+		Scene *temp;
+		case SDL_MOUSEBUTTONDOWN:
+			for (auto it : scenes)
 			{
-				scn = it.second;
-				break;
+				if(it.second->get_window_id() == event.window.windowID)
+				{
+					temp = it.second;
+					break;
+				}
 			}
-		}
-		scn->click_objects(event.button.x, event.button.y, event.button.button, false);
-		break;
-	}
-	case SDL_MOUSEBUTTONUP:
-	{
-		Scene *scn;
-		for (auto it : scenes)
-		{
-		    if(it.second->get_window_id() == event.window.windowID)
+			temp->click_objects(event.button.x, event.button.y, event.button.button, true);
+			break;
+		case SDL_MOUSEBUTTONUP:
+			for (auto it : scenes)
 			{
-				scn = it.second;
-				break;
+				if(it.second->get_window_id() == event.window.windowID)
+				{
+					temp = it.second;
+					break;
+				}
 			}
-		}
-		scn->click_objects(event.button.x, event.button.y, event.button.button, true);
-		break;
-	}
-	case SDL_WINDOWEVENT:
-	{
-		Scene *scn;
-		for (auto it : scenes)
-		{
-		    if(it.second->get_window_id() == event.window.windowID)
+			temp->click_objects(event.button.x, event.button.y, event.button.button, false);
+			break;
+		case SDL_WINDOWEVENT:
+			for (auto it : scenes)
 			{
-				scn = it.second;
-				break;
+				if(it.second->get_window_id() == event.window.windowID)
+				{
+					temp = it.second;
+					break;
+				}
 			}
-		}
-		switch (event.window.event) {
-		case SDL_WINDOWEVENT_CLOSE:
-			scenes.erase(scn->get_scene_name());
-			delete scn;
-		}
-		break;
-	}
-	case SDL_QUIT:
-	{
-		quit();
-		break;
-	}
+			switch (event.window.event)
+			{
+				case SDL_WINDOWEVENT_CLOSE:
+					scenes.erase(temp->get_scene_name());
+					delete temp;
+			}
+			break;
+		case SDL_QUIT:
+			quit();
+			break;
 	}
 }
 
 void GameManager::update()
 {
-	for (auto &it : scenes) {
+	for (auto &it : scenes)
 	    it.second->update();
-	}
 }
 
 void GameManager::render()

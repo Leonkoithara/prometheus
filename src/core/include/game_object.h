@@ -4,8 +4,8 @@
 #include "type_structs.h"
 
 #include <iostream>
-#include <string>
 #include <map>
+#include <string>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_render.h>
@@ -27,7 +27,7 @@ public:
 	virtual void start() {}
 	virtual void update() {}
 
-	void add_texturefile(std::string texturefile, int render_order) { textures[render_order] = std::pair<std::string, SDL_Texture*>(texturefile, NULL); }
+	void add_texturefile(std::string, int);
 	void add_texture(SDL_Texture *texture, int texture_id) { textures[texture_id].second = texture; }
 	void set_render_rect_defaults();
 	void set_render_props(int tex_x1 = 0, int tex_y1 = 0, int h = 0, int w = 0, int scale_x = 1, int scale_y = 1);

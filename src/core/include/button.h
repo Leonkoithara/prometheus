@@ -2,7 +2,6 @@
 #define BUTTON
 
 #include "game_object.h"
-#include <SDL2/SDL_render.h>
 
 
 class Button : public GameObject
@@ -25,7 +24,7 @@ public:
 
 	std::string get_text() { return text; }
 
-	void set_whileclickevent(void (*func)(int)) { whileclickevent = func;}
+	void set_whileclickevent(void (*func)(int)) { whileclickevent = func; }
 	void set_onclickevent(void (*func)(int)) { onceclickevent = func; }
 };
 
