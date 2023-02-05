@@ -1,7 +1,9 @@
-#include "game_object.h"
-#include "SDL_render.h"
-
 #include <iostream>
+
+#include <SDL_render.h>
+
+#include "game_object.h"
+
 
 GameObject::GameObject(std::string nm)
 {
@@ -18,7 +20,8 @@ GameObject::~GameObject() {}
 void GameObject::set_render_rect_defaults()
 {
 	int w1 = 0, w2 = 0, h1 = 0, h2 = 0;
-	for (auto it : textures) {
+	for (auto it : textures)
+	{
 	    SDL_QueryTexture(it.second.second, NULL, NULL, &w2, &h2);
 		if(w2 > w1)
 			w1 = w2;
@@ -51,4 +54,9 @@ void GameObject::set_position(vec3D pos)
 	position = pos;
 	dest_rect.x = pos.x;
 	dest_rect.y = pos.y;
+}
+
+void GameObject::add_texturefile(std::string texturefile, int render_order)
+{
+	textures[render_order] = std::pair<std::string, SDL_Texture*>(texturefile, NULL);
 }

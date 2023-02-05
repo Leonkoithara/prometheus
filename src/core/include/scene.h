@@ -1,11 +1,11 @@
 #ifndef SCENE
 #define SCENE
 
-#include <string>
 #include <unordered_map>
+#include <string>
 
-#include "game_object.h"
 #include "camera.h"
+#include "game_object.h"
 
 
 class Scene
