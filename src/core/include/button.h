@@ -19,6 +19,7 @@ public:
 	bool check_clicked(int, int);
 	void click_object(int, bool);
 	void update();
+	void create_textures(SDL_Renderer *);
 
 	void set_text(std::string);
 

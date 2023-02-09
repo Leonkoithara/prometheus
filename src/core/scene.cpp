@@ -83,56 +83,21 @@ void Scene::update()
 	}
 }
 
-void Scene::set_game_obj_texture(GameObject *obj)
-{
-	for (auto texture : obj->get_textures())
-	{
-		if (texture.second.second == NULL)
-		{
-			SDL_Texture *tex;
-			if (texture.second.first == "button_text")
-			{
-				Button *butt = dynamic_cast<Button*>(obj);
-				TTF_Font *sans = TTF_OpenFont("res/fonts/FreeSans.ttf", 24);
-				std::cout << TTF_GetError() << std::endl;
-				SDL_Color white = {225, 225, 225};
-				SDL_Surface *msg_surface = TTF_RenderText_Solid(sans, butt->get_text().c_str(), white);
-				tex = SDL_CreateTextureFromSurface(renderer, msg_surface);
-			}
-			else
-			{
-				SDL_Surface *surface = IMG_Load(texture.second.first.c_str());
-				tex = SDL_CreateTextureFromSurface(renderer, surface);
-				SDL_FreeSurface(surface);
-			}
-			obj->add_texture(tex, texture.first);
-		}
-
-	}
-	obj->set_render_rect_defaults();
-}
-
 void Scene::render()
 {
 	if (active_scene)
 	{
 		SDL_RenderClear(renderer);
 		
-	    for (auto it : game_objects)
+	    for (auto &it : game_objects)
 		{
-			for (auto itr : it.second->get_textures())
-			{
-			    if (itr.second.second == NULL)
-				{
-				    set_game_obj_texture(it.second);
-					break;
-				}
-			}
+			it.second->create_textures(renderer);
+
 		    SDL_Rect src = it.second->get_src_render_rect();
 			SDL_Rect dest = camera.get_destination_rect(it.second->get_position(), src.h, src.w);
 
 			auto textures = it.second->get_textures();
-			for (auto itr : textures)
+			for (auto itr : *textures)
 			    SDL_RenderCopy(renderer, itr.second.second, &src, &dest);
 		}
 		

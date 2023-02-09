@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <SDL_render.h>
+#include <SDL_image.h>
 
 #include "game_object.h"
 
@@ -16,6 +17,26 @@ GameObject::GameObject(std::string nm)
 }
 
 GameObject::~GameObject() {}
+
+void GameObject::create_textures(SDL_Renderer *renderer)
+{
+	if (!textures.empty())
+	{
+		// Assuming all textures are images
+		for (auto &texture : textures)
+		{
+			if (texture.second.second == NULL)
+			{
+				SDL_Surface *surface = IMG_Load(texture.second.first.c_str());
+				SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surface);
+				SDL_FreeSurface(surface);
+				texture.second.second = tex;
+			}
+		}
+	}
+
+	set_render_rect_defaults();
+}
 
 void GameObject::set_render_rect_defaults()
 {

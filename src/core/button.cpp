@@ -1,5 +1,7 @@
 #include <SDL_rect.h>
-#include <SDL_surface.h>
+#include <SDL_render.h>
+#include <SDL_ttf.h>
+#include <SDL_image.h>
 
 #include "button.h"
 #include "game_object.h"
@@ -41,7 +43,7 @@ void Button::click_object(int button_id, bool click)
 
 void Button::set_text(std::string text)
 {
-	int max = get_textures().end()->first;
+	int max = get_textures()->end()->first;
 	this->text = text;
 	add_texturefile("button_text", max);
 }
@@ -50,4 +52,34 @@ void Button::update()
 {
 	if (clicked >= 0)
 	    whileclickevent(clicked);
+}
+
+void Button::create_textures(SDL_Renderer *renderer)
+{
+	auto texs = get_textures();
+	if (!texs->empty())
+	{
+		for (auto &texture : *texs)
+		{
+			if (texture.second.second == NULL)
+			{
+				if (texture.second.first != "button_text")
+				{
+					SDL_Surface *surface = IMG_Load(texture.second.first.c_str());
+					texture.second.second = SDL_CreateTextureFromSurface(renderer, surface);
+					SDL_FreeSurface(surface);
+				}
+				else
+				{
+					TTF_Font *sans = TTF_OpenFont("res/fonts/FreeSans.ttf", 24);
+					std::cout << TTF_GetError() << std::endl;
+					SDL_Color white = {225, 225, 225, 255};
+					SDL_Surface *msg_surface = TTF_RenderText_Blended_Wrapped(sans, text.c_str(), white, 200);
+					texture.second.second = SDL_CreateTextureFromSurface(renderer, msg_surface);
+				}
+			}
+		}
+
+		set_render_rect_defaults();
+	}
 }
