@@ -1,7 +1,7 @@
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
-add_library(prometheus OBJECT menu.cpp)
+add_library(prometheus OBJECT menu.cpp prometheus.cpp)
 
 target_include_directories(
   prometheus
