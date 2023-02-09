@@ -29,7 +29,6 @@ public:
 
 	void set_active_scene(bool active) { active_scene = active; }
 	void set_update_scene(bool update) { update_scene = update; }
-	void set_game_obj_texture(GameObject*);
 
 	GameObject* get_scene_game_obj(std::string);
 	std::string get_scene_name(){ return name; }
