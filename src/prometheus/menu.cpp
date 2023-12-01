@@ -9,6 +9,7 @@ void new_game(int x)
     Scene *game_start = new Scene("prometheus");
     game_start->create_window("Prometheus", 100, 100, 640, 480, false);
     gm.add_scene(game_start);
+    gm.delete_scene("main_menu");
 }
 
 void create_main_menu()
