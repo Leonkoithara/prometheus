@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include <SDL2/SDL.h>
 
@@ -17,6 +18,7 @@ private:
     SDL_Window *window;
     SDL_Renderer *renderer;
     std::unordered_map<std::string, Scene*> scenes;
+    std::vector<Scene*> delete_scene_queue;
 public:
     GameManager();
     ~GameManager();
@@ -34,6 +36,8 @@ public:
     void add_empty_scene(std::string, int, int, int, int);
     void add_scene(Scene*);
     void add_game_object(GameObject*, std::string);
+
+    void delete_scene(std::string);
 };
 
 extern GameManager gm;
