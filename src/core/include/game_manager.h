@@ -13,27 +13,27 @@
 class GameManager
 {
 private:
-	bool running;
-	SDL_Window *window;
-	SDL_Renderer *renderer;
-	std::unordered_map<std::string, Scene*> scenes;
+    bool running;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    std::unordered_map<std::string, Scene*> scenes;
 public:
-	GameManager();
-	~GameManager();
+    GameManager();
+    ~GameManager();
 
-	void update();
-	void event_handler();
-	void render();
-	void quit();
+    void update();
+    void event_handler();
+    void render();
+    void quit();
 
-	GameObject* instantiate_game_object(std::string, std::string, float, float);
+    GameObject* instantiate_game_object(std::string, std::string, float, float);
 
-	bool get_running_stat() { return running; }
-	Scene* get_scene_by_name(std::string);
+    bool get_running_stat() { return running; }
+    Scene* get_scene_by_name(std::string);
 
-	void add_empty_scene(std::string, int, int, int, int);
-	void add_scene(Scene*);
-	void add_game_object(GameObject*, std::string);
+    void add_empty_scene(std::string, int, int, int, int);
+    void add_scene(Scene*);
+    void add_game_object(GameObject*, std::string);
 };
 
 extern GameManager gm;
