@@ -9,14 +9,14 @@
 class Camera
 {
 private:
-	vec3D position;
+    vec3D position;
 public:
-	Camera();
-	~Camera();
+    Camera();
+    ~Camera();
 
-	SDL_Rect get_destination_rect(vec3D, int, int);
+    SDL_Rect get_destination_rect(vec3D, int, int);
 
-	void set_camera_position(vec3D);
+    void set_camera_position(vec3D);
 };
 
 #endif
