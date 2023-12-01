@@ -30,55 +30,49 @@ void GameManager::event_handler()
 {
     SDL_Event event;
     SDL_PollEvent(&event);
-    switch (event.type)
+    for (auto it : scenes)
     {
-        Scene *temp;
-        case SDL_MOUSEBUTTONDOWN:
-            for (auto it : scenes)
-            {
+        switch (event.type)
+        {
+            Scene *temp;
+            case SDL_MOUSEBUTTONDOWN:
                 if(it.second->get_window_id() == event.window.windowID)
-                {
                     temp = it.second;
-                    break;
-                }
-            }
-            temp->click_objects(event.button.x, event.button.y, event.button.button, true);
-            break;
-        case SDL_MOUSEBUTTONUP:
-            for (auto it : scenes)
-            {
+                temp->click_objects(event.button.x, event.button.y, event.button.button, true);
+                break;
+            case SDL_MOUSEBUTTONUP:
                 if(it.second->get_window_id() == event.window.windowID)
-                {
                     temp = it.second;
+                temp->click_objects(event.button.x, event.button.y, event.button.button, false);
+                break;
+            case SDL_WINDOWEVENT:
+                // If last scene clean when SDL_QUIT event is triggered
+                if (scenes.size() == 1)
                     break;
-                }
-            }
-            temp->click_objects(event.button.x, event.button.y, event.button.button, false);
-            break;
-        case SDL_WINDOWEVENT:
-            for (auto it : scenes)
-            {
                 if(it.second->get_window_id() == event.window.windowID)
-                {
                     temp = it.second;
-                    break;
+                switch (event.window.event)
+                {
+                    case SDL_WINDOWEVENT_CLOSE:
+                        delete_scene(temp->get_scene_name());
                 }
-            }
-            switch (event.window.event)
-            {
-                case SDL_WINDOWEVENT_CLOSE:
-                    scenes.erase(temp->get_scene_name());
-                    delete temp;
-            }
-            break;
-        case SDL_QUIT:
-            quit();
-            break;
+                break;
+            case SDL_QUIT:
+                quit();
+                break;
+        }
     }
 }
 
 void GameManager::update()
 {
+    while (!delete_scene_queue.empty())
+    {
+        Scene *scn = delete_scene_queue.back();
+        scenes.erase(scn->get_scene_name());
+        delete scn;
+        delete_scene_queue.pop_back();
+    }
     for (auto &it : scenes)
         it.second->update();
 }
@@ -137,10 +131,19 @@ void GameManager::add_empty_scene(std::string scene_name, int xpos, int ypos, in
     scenes[scene_name] = scn;
 }
 
+void GameManager::delete_scene(std::string name)
+{
+    auto it = scenes.find(name);
+    if (it == scenes.end())
+        std::cout << "Scene not found. Skipping..." << std::endl;
+
+    delete_scene_queue.push_back(it->second);
+}
+
 GameManager::~GameManager()
 {
     for (auto &it : scenes)
-        delete it.second;    
+        delete it.second;
     SDL_Quit();
     std::cout << "Game cleaned" << std::endl;
 }
