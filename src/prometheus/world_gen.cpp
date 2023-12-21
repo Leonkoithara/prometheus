@@ -20,6 +20,34 @@ terrain get_terrain(int *probablity_row)
     return plains;
 }
 
+void modify_probablities(int *probablity_row, int p_delta, terrain t)
+{
+    int curr_val = *(probablity_row+t);
+    for (int i=plains; i<TERRAIN_TYPES; i++)
+    {
+        if (i == t)
+		{
+            int temp = *(probablity_row+i) + p_delta;
+            if (temp < 0)
+                *(probablity_row+i) = 0;
+            else if (temp > 100)
+                *(probablity_row+i) = 100;
+            else
+                *(probablity_row+i) += p_delta;
+        }
+        else
+        {
+            int temp = *(probablity_row+i) - (p_delta/(TERRAIN_TYPES-1));
+            if (temp < 0)
+                *(probablity_row+i) = 0;
+            else if (temp > 100)
+                *(probablity_row+i) = 100;
+            else
+                *(probablity_row+i) -= p_delta/(TERRAIN_TYPES-1);
+        }
+    }
+}
+
 void create_new_world(Scene *prometheus, std::string world_name, long seed)
 {
     std::string world_filename = "res/save/world.dat";
@@ -53,43 +81,37 @@ void create_new_world(Scene *prometheus, std::string world_name, long seed)
         {
             terrain t = get_terrain(probablity_matrix[i][j]);
             terrain_matrix[i][j] = t;
+            int rad = 3;
             switch (t)
 			{
                 case plains:
                 case forests:
-                    for (int k=plains; k<TERRAIN_TYPES; k++)
-                    {
-                        if (i+1 < world_size-1)
-                            probablity_matrix[i+1][j][k] += k==t?(TERRAIN_TYPES-1)*5:-5;
-                        if (j+1 < world_size-1)
-                            probablity_matrix[i][j+1][k] += k==t?(TERRAIN_TYPES-1)*5:-5;
-                        if (i+1 < world_size-1 && j+1 < world_size-1)
-                            probablity_matrix[i+1][j+1][k] += k==t?(TERRAIN_TYPES-1)*5:-5;
-                        if (i-1 > 0 && j+1 < world_size-1)
-                            probablity_matrix[i-1][j+1][k] += k==t?(TERRAIN_TYPES-1)*5:-5;
-                    }
+                    if (i+1 < world_size-1)
+                        modify_probablities(probablity_matrix[i+1][j], (TERRAIN_TYPES-1)*5, t);
+                    if (j+1 < world_size-1)
+                        modify_probablities(probablity_matrix[i][j+1], (TERRAIN_TYPES-1)*5, t);
+                    if (i+1 < world_size-1 && j+1 < world_size-1)
+                        modify_probablities(probablity_matrix[i+1][j+1], (TERRAIN_TYPES-1)*5, t);
+                    if (i-1 > 0 && j+1 < world_size-1)
+                        modify_probablities(probablity_matrix[i-1][j+1], (TERRAIN_TYPES-1)*5, t);
                     break;
                 case mountains:
                 case water:
-                    for (int k=plains; k<TERRAIN_TYPES; k++)
-                    {
-                        if (i+1 < world_size)
-                            probablity_matrix[i+1][j][k] += k==t?(TERRAIN_TYPES-1)*7:-7;
-                        if (j+1 < world_size)
-                            probablity_matrix[i][j+1][k] += k==t?(TERRAIN_TYPES-1)*7:-7;
-                    }
+                    if (i+1 < world_size)
+                        modify_probablities(probablity_matrix[i+1][j], (TERRAIN_TYPES-1)*7, t);
+                    if (j+1 < world_size)
+                        modify_probablities(probablity_matrix[i][j+1], (TERRAIN_TYPES-1)*7, t);
                     break;
                 case human_civ:
                 case civ_ruins:
-                    for (int k=plains; k<TERRAIN_TYPES; k++)
+                    for (int xr=-1*rad; xr<=rad; xr++)
                     {
-                        int rad = 3;
-                        for (int xr=-1*rad; xr<=rad; xr++)
-						{
-                            for (int yr=-1*rad; yr<=rad; yr++)
-							{
-                                if (i+xr < world_size && j+yr < world_size && i+xr >= 0 && j+yr >=0 && xr != 0 && yr != 0)
-                                    probablity_matrix[i+xr][j+yr][k] += k==human_civ||k==civ_ruins?-15:15/(TERRAIN_TYPES-1);
+                        for (int yr=-1*rad; yr<=rad; yr++)
+                        {
+                            if (i+xr < world_size && j+yr < world_size && i+xr >= 0 && j+yr >=0 && xr != 0 && yr != 0)
+                            {
+                                modify_probablities(probablity_matrix[i+xr][j+yr], -15, human_civ);
+                                modify_probablities(probablity_matrix[i+xr][j+yr], -15, civ_ruins);
                             }
                         }
                     }
