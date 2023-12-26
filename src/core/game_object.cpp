@@ -8,7 +8,7 @@
 GameObject::GameObject(std::string nm)
 {
     name = nm;
-    std::cout << "Game object created" << std::endl;
+    std::cout << "Game object: " << name << " created" << std::endl;
     position = {0, 0, 0};
     src_rect = {0, 0, 0, 0};
     dest_rect = {0, 0, 0, 0};
