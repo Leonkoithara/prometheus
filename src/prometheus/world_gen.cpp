@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -20,30 +21,65 @@ terrain get_terrain(int *probablity_row)
     return plains;
 }
 
+
 void modify_probablities(int *probablity_row, int p_delta, terrain t)
 {
-    int curr_val = *(probablity_row+t);
-    for (int i=plains; i<TERRAIN_TYPES; i++)
+    int changed = 0;
+    int temp = *(probablity_row+t) + p_delta;
+
+    if (temp < 0)
     {
-        if (i == t)
-		{
-            int temp = *(probablity_row+i) + p_delta;
-            if (temp < 0)
-                *(probablity_row+i) = 0;
-            else if (temp > 100)
-                *(probablity_row+i) = 100;
-            else
-                *(probablity_row+i) += p_delta;
-        }
-        else
+        p_delta = -1 * (*(probablity_row+t));
+        *(probablity_row+t) = 0;
+    }
+    else if (temp > 100)
+    {
+        p_delta = 100 - *(probablity_row+t);
+        *(probablity_row+t) = 100;
+    }
+    else
+        *(probablity_row+t) += p_delta;
+
+    int remains = p_delta;
+
+    while (std::abs(changed) < std::abs(p_delta))
+    {
+        int change_each = remains/(TERRAIN_TYPES-1);
+        if (change_each == 0)
+            change_each = remains/std::abs(remains);
+        int old_changed = changed;
+
+        for (int i=plains; i<TERRAIN_TYPES; i++)
         {
-            int temp = *(probablity_row+i) - (p_delta/(TERRAIN_TYPES-1));
-            if (temp < 0)
-                *(probablity_row+i) = 0;
-            else if (temp > 100)
-                *(probablity_row+i) = 100;
-            else
-                *(probablity_row+i) -= p_delta/(TERRAIN_TYPES-1);
+            int change = 0;
+            if (i != t && std::abs(changed) < std::abs(p_delta))
+            {
+                temp = *(probablity_row+i) - change_each;
+                if (temp < 0)
+				{
+                    change = *(probablity_row+i);
+                    *(probablity_row+i) = 0;
+                }
+                else if (temp > 100)
+                {
+                    change = *(probablity_row+i) - 100;
+                    *(probablity_row+i) = 100;
+                }
+                else
+                {
+                    change = change_each;
+                    *(probablity_row+i) -= change_each;
+                }
+            }
+            changed -= change;
+            remains -= change;
+        }
+
+        if (changed == old_changed)
+		{
+            std::cout << probablity_row[0] << " " << probablity_row[1] << " " << probablity_row[2] << " " << probablity_row[3] << " " << probablity_row[4] << " " << probablity_row[5] << " " << std::endl;
+            std::cout << "Cannot change " << probablity_row[t] << " by " << p_delta << std::endl;
+            break;
         }
     }
 }
