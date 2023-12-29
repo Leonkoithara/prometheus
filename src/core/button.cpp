@@ -6,7 +6,7 @@
 #include "type_structs.h"
 
 
-void button_empty_callback(int x) {};
+void button_empty_callback(int x, GameObject*) {};
 Button::Button(std::string name) : GameObject(name)
 {
     clicked = -1;
@@ -33,7 +33,7 @@ void Button::click_object(int button_id, bool click)
     if (click)
     {
         clicked = button_id;
-        onceclickevent(button_id);
+        onceclickevent(button_id, this);
     }
     else
         clicked = -1;
@@ -49,5 +49,5 @@ void Button::set_text(std::string text)
 void Button::update()
 {
     if (clicked >= 0)
-        whileclickevent(clicked);
+        whileclickevent(clicked, this);
 }

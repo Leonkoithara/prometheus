@@ -10,11 +10,13 @@
 
 #include "game_object.h"
 #include "scene.h"
+#include "type_structs.h"
 
 class GameManager
 {
 private:
     bool running;
+    vec3D screen_size;
     SDL_Window *window;
     SDL_Renderer *renderer;
     std::unordered_map<std::string, Scene*> scenes;

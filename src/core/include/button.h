@@ -10,8 +10,8 @@ private:
     int clicked;
     std::string text;
 
-    void (*whileclickevent)(int);
-    void (*onceclickevent)(int);
+    void (*whileclickevent)(int, GameObject*);
+    void (*onceclickevent)(int, GameObject*);
 public:
     Button(std::string);
     ~Button();
@@ -24,8 +24,8 @@ public:
 
     std::string get_text() { return text; }
 
-    void set_whileclickevent(void (*func)(int)) { whileclickevent = func; }
-    void set_onclickevent(void (*func)(int)) { onceclickevent = func; }
+    void set_whileclickevent(void (*func)(int, GameObject*)) { whileclickevent = func; }
+    void set_onclickevent(void (*func)(int, GameObject*)) { onceclickevent = func; }
 };
 
 
