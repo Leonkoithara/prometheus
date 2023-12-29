@@ -4,17 +4,7 @@
 #include "scene.h"
 #include "world_gen.h"
 
-void quit_game(int x) { gm.quit(); }
-void create_world(int x)
-{
-    Scene *new_world_gen = new Scene("prometheus");
-    new_world_gen->create_window("Prometheus", 0, 0, 1250, 950, false);
-
-    create_new_world(new_world_gen, "prometheus_begins");
-
-    gm.add_scene(new_world_gen);
-    gm.delete_scene("main_menu");
-}
+void quit_game(int x, GameObject *) { gm.quit(); }
 
 void create_main_menu()
 {
@@ -29,7 +19,7 @@ void create_main_menu()
     create_world_button->set_position({-90, -30});
     create_world_button->add_texturefile("res/textures/button.png", 0);
     create_world_button->set_text("Create new World");
-    create_world_button->set_onclickevent(&create_world);
+    create_world_button->set_onclickevent(&start_create_world);
 
     Button *quit_game_button = new Button("quit_game_button");
     quit_game_button->set_position({-60, 30});
