@@ -94,19 +94,19 @@ void create_submap(int x, GameObject *icon)
 void start_create_world(int x, GameObject *)
 {
     Scene *new_world_gen = new Scene("prometheus");
+    int world_size = 50;
 
-    new_world_gen->create_window("Prometheus", 0, 0, 50*25, 50*25, false);
+    new_world_gen->create_window("Prometheus", 0, 0, world_size*25, world_size*25, false);
 
-    create_new_world(new_world_gen, "prometheus_begins");
+    create_new_world(new_world_gen, "prometheus_begins", world_size);
 
     gm.add_scene(new_world_gen);
     gm.delete_scene("main_menu");
 }
 
-void create_new_world(Scene *prometheus, std::string world_name, long seed)
+void create_new_world(Scene *prometheus, std::string world_name, int world_size, long seed)
 {
     std::string world_filename = "res/save/world.dat";
-    int world_size = 50;
     int probablity_matrix[world_size][world_size][TERRAIN_TYPES];
     terrain terrain_matrix[world_size][world_size];
     if (seed == 0)

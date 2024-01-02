@@ -39,7 +39,7 @@ public:
     SDL_Rect get_src_render_rect() { return src_rect; }
     SDL_Rect get_dest_render_rect() { return dest_rect; }
     vec3D get_position() { return position; }
-    std::string get_tag(std::string key) { return tags[key]; }
+    std::string get_tag(std::string key);
 
     void set_position(vec3D);
 };

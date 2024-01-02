@@ -60,3 +60,12 @@ void GameObject::add_texturefile(std::string texturefile, int render_order)
 {
     textures[render_order] = std::pair<std::string, SDL_Texture*>(texturefile, NULL);
 }
+
+std::string GameObject::get_tag(std::string key)
+{
+    auto search = tags.find(key);
+    if (search != tags.end())
+        return search->first;
+    else
+        return "Not found";
+}
