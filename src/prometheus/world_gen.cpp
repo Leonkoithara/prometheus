@@ -196,7 +196,7 @@ void create_new_world(Scene *prometheus, std::string world_name, int world_size,
             new_symbol->add_tag("xpos", std::to_string(i));
             new_symbol->add_tag("ypos", std::to_string(j));
             new_symbol->set_onclickevent(create_submap);
-            new_symbol->set_position({(float)25*i-320, (float)25*j-240});
+            new_symbol->set_position({(float)25*i, (float)25*j});
             new_symbol->add_texturefile("res/textures/" + texturefile_map[terrain_matrix[i][j]] + ".png", 0);
             prometheus->add_game_object(new_symbol);
         }
