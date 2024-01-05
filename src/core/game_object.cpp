@@ -2,6 +2,7 @@
 
 #include <SDL_render.h>
 
+#include "camera.h"
 #include "game_object.h"
 
 
@@ -52,8 +53,7 @@ void GameObject::set_render_props(int tex_x1, int tex_y1, int h, int w, int scal
 void GameObject::set_position(vec3D pos)
 {
     position = pos;
-    dest_rect.x = pos.x;
-    dest_rect.y = pos.y;
+    dest_rect = cam.get_destination_rect(pos, dest_rect.h, dest_rect.w);
 }
 
 void GameObject::add_texturefile(std::string texturefile, int render_order)
@@ -65,7 +65,7 @@ std::string GameObject::get_tag(std::string key)
 {
     auto search = tags.find(key);
     if (search != tags.end())
-        return search->first;
+        return search->second;
     else
         return "Not found";
 }

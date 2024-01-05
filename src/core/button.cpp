@@ -16,11 +16,10 @@ Button::Button(std::string name) : GameObject(name)
 
 bool Button::check_clicked(int xpos, int ypos)
 {
-    vec3D pos = this->get_position();
     SDL_Rect rect = this->get_dest_render_rect();
     if (
-        xpos >= pos.x &&
-        ypos >= pos.y &&
+        xpos >= rect.x &&
+        ypos >= rect.y &&
         xpos <= rect.x+rect.w &&
         ypos <= rect.y+rect.h
     )

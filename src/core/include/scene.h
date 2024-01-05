@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <string>
 
-#include "camera.h"
 #include "game_object.h"
 
 
@@ -17,7 +16,6 @@ private:
     std::unordered_map<std::string, GameObject*> game_objects;
     SDL_Renderer *renderer;
     SDL_Window *window;
-    Camera camera;
 public:
     Scene(std::string);
     ~Scene();

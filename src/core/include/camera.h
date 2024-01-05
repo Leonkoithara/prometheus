@@ -19,4 +19,5 @@ public:
     void set_camera_position(vec3D);
 };
 
+extern Camera cam;
 #endif
