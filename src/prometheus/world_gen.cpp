@@ -8,6 +8,7 @@
 #include "scene.h"
 #include "game_manager.h"
 #include "game_object.h"
+#include "type_structs.h"
 #include "world_gen.h"
 
 
@@ -96,7 +97,14 @@ void start_create_world(int x, GameObject *)
     Scene *new_world_gen = new Scene("prometheus");
     int world_size = 50;
 
-    new_world_gen->create_window("Prometheus", 0, 0, world_size*25, world_size*25, false);
+    int winx = world_size*25, winy = world_size*25;
+    vec3D screen_size = gm.get_screen_size();
+    if (winx > screen_size.x)
+        winx = screen_size.x;
+    if (winy > screen_size.y)
+        winy = screen_size.y;
+
+    new_world_gen->create_window("Prometheus", 0, 0, winx, winy, false);
 
     create_new_world(new_world_gen, "prometheus_begins", world_size);
 
@@ -129,7 +137,6 @@ void create_new_world(Scene *prometheus, std::string world_name, int world_size,
         }
     }
 
-    FILE *world = fopen(world_filename.c_str(), "rw");
     for (int i=0; i<world_size; i++)
     {
         for (int j=0; j<world_size; j++)

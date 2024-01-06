@@ -145,5 +145,5 @@ Scene::~Scene()
         delete it.second;
 
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);  
+    SDL_DestroyWindow(window);
 }

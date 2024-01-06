@@ -33,6 +33,7 @@ public:
     GameObject* instantiate_game_object(std::string, std::string, float, float);
 
     bool get_running_stat() { return running; }
+    vec3D get_screen_size() { return screen_size; }
     Scene* get_scene_by_name(std::string);
 
     void add_empty_scene(std::string, int, int, int, int);
