@@ -21,7 +21,7 @@ void create_main_menu()
     create_world_button->set_text("Create new World");
     create_world_button->set_onclickevent(&start_create_world);
 
-    Button *quit_game_button = new Button("quit_game_button");
+    Button *quit_game_button = new Button("quit_game_button", 'q');
     quit_game_button->set_position({220, 190});
     quit_game_button->add_texturefile("res/textures/button.png", 0);
     quit_game_button->set_text("Quit game");

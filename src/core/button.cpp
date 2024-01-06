@@ -6,12 +6,16 @@
 #include "type_structs.h"
 
 
-void button_empty_callback(int x, GameObject*) {};
+void button_empty_callback(int x, GameObject *){};
 Button::Button(std::string name) : GameObject(name)
 {
     clicked = -1;
     whileclickevent = &button_empty_callback;
     onceclickevent = &button_empty_callback;
+}
+Button::Button(std::string name, char key) : Button(name)
+{
+    keycode_binding = key;
 }
 
 bool Button::check_clicked(int xpos, int ypos)
