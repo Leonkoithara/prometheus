@@ -10,11 +10,13 @@
 
 #include "game_object.h"
 #include "scene.h"
+#include "type_structs.h"
 
 class GameManager
 {
 private:
     bool running;
+    vec3D screen_size;
     SDL_Window *window;
     SDL_Renderer *renderer;
     std::unordered_map<std::string, Scene*> scenes;
@@ -31,6 +33,7 @@ public:
     GameObject* instantiate_game_object(std::string, std::string, float, float);
 
     bool get_running_stat() { return running; }
+    vec3D get_screen_size() { return screen_size; }
     Scene* get_scene_by_name(std::string);
 
     void add_empty_scene(std::string, int, int, int, int);

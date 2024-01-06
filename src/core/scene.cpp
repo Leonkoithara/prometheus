@@ -6,6 +6,7 @@
 #include <SDL_ttf.h>
 
 #include "button.h"
+#include "camera.h"
 #include "game_object.h"
 #include "scene.h"
 
@@ -54,14 +55,12 @@ GameObject* Scene::instantiate_game_object(std::string game_obj_name, float pos_
 
 void Scene::click_objects(int xpos, int ypos, int button_id, bool click)
 {
-    int winw, winh;
-    SDL_GetWindowSize(window, &winw, &winh);
     for (auto &it : game_objects )
     {
         Button *obj = dynamic_cast<Button*>(it.second);
         if (obj == NULL)
             continue;
-        if (obj->check_clicked(xpos-(winw/2), ypos-(winh/2)))
+        if (obj->check_clicked(xpos, ypos))
             obj->click_object(button_id, click);
     }
 }
@@ -129,7 +128,7 @@ void Scene::render()
                 }
             }
             SDL_Rect src = it.second->get_src_render_rect();
-            SDL_Rect dest = camera.get_destination_rect(it.second->get_position(), src.h, src.w);
+            SDL_Rect dest = cam.get_destination_rect(it.second->get_position(), src.h, src.w);
 
             auto textures = it.second->get_textures();
             for (auto itr : textures)
@@ -146,5 +145,5 @@ Scene::~Scene()
         delete it.second;
 
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);  
+    SDL_DestroyWindow(window);
 }

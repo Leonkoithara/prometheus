@@ -24,6 +24,12 @@ GameManager::GameManager()
         std::cout << "Couldn't initialize TTF lib: " << TTF_GetError() << std::endl;
         exit(1);
     }
+
+    SDL_DisplayMode DM;
+    SDL_GetCurrentDisplayMode(0, &DM);
+    float width = DM.w;
+    float height = DM.h;
+    screen_size = { width, height, 0};
 }
 
 void GameManager::event_handler()
