@@ -65,6 +65,24 @@ void Scene::click_objects(int xpos, int ypos, int button_id, bool click)
     }
 }
 
+void Scene::process_keystroke(unsigned int key, unsigned int mod, bool down)
+{
+    for (auto &it : game_objects )
+    {
+        Button *obj = dynamic_cast<Button*>(it.second);
+        if (obj == NULL)
+            continue;
+        if (obj->get_keycode_binding() == key)
+		{
+            if ((obj->get_keycode_binding_mod() == 0 && ((mod & ~(KMOD_NUM)) | KMOD_NONE) == 0) || (obj->get_keycode_binding_mod() & mod) != 0)
+            {
+                obj->click_object(1, true);
+                obj->click_object(1, false);
+            }
+        }
+    }
+}
+
 void Scene::add_game_object(GameObject *obj)
 {
     std::string game_obj_name = obj->get_name();
