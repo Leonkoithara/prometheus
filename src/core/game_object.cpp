@@ -12,7 +12,6 @@ GameObject::GameObject(std::string nm)
     std::cout << "Game object: " << name << " created" << std::endl;
     position = {0, 0, 0};
     src_rect = {0, 0, 0, 0};
-    dest_rect = {0, 0, 0, 0};
     start();
 }
 
@@ -31,8 +30,6 @@ void GameObject::set_render_rect_defaults()
     }
     src_rect.h = h1;
     src_rect.w = w1;
-    dest_rect.h = src_rect.h;
-    dest_rect.w = src_rect.w;
 }
 
 void GameObject::set_render_props(int tex_x1, int tex_y1, int h, int w, int scale_x, int scale_y)
@@ -43,17 +40,11 @@ void GameObject::set_render_props(int tex_x1, int tex_y1, int h, int w, int scal
         src_rect.h = h;
     if(w != 0)
         src_rect.w = w;
-    
-    dest_rect.x = position.x;
-    dest_rect.y = position.y;
-    dest_rect.h = src_rect.h * scale_y;
-    dest_rect.w = src_rect.w * scale_y;
 }
 
 void GameObject::set_position(vec3D pos)
 {
     position = pos;
-    dest_rect = cam.get_destination_rect(pos, dest_rect.h, dest_rect.w);
 }
 
 void GameObject::add_texturefile(std::string texturefile, int render_order)

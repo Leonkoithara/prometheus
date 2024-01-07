@@ -1,6 +1,7 @@
 #ifndef GAME_OBJECT
 #define GAME_OBJECT
 
+#include "camera.h"
 #include "type_structs.h"
 
 #include <iostream>
@@ -18,7 +19,6 @@ private:
     std::string name;
     vec3D position;
     SDL_Rect src_rect;
-    SDL_Rect dest_rect;
     std::map<int, std::pair<std::string, SDL_Texture*>> textures;
     std::map<std::string, std::string> tags;
 public:
@@ -37,7 +37,7 @@ public:
     std::string get_name() { return name; }
     std::map<int, std::pair<std::string, SDL_Texture*>> get_textures() { return textures; }
     SDL_Rect get_src_render_rect() { return src_rect; }
-    SDL_Rect get_dest_render_rect() { return dest_rect; }
+    SDL_Rect get_dest_render_rect() { return cam.get_destination_rect(position, src_rect.h, src_rect.w); }
     vec3D get_position() { return position; }
     std::string get_tag(std::string key);
 
