@@ -17,6 +17,7 @@ public:
     SDL_Rect get_destination_rect(vec3D, int, int);
 
     void set_camera_position(vec3D);
+    void camera_translate(vec3D);
 };
 
 extern Camera cam;

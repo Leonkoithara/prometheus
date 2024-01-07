@@ -5,6 +5,7 @@
 #include <ctime>
 
 #include "button.h"
+#include "camera.h"
 #include "scene.h"
 #include "game_manager.h"
 #include "game_object.h"
@@ -92,6 +93,38 @@ void create_submap(int x, GameObject *icon)
     std::cout << "Clicked: " << icon->get_tag("terrain") << ", at: " << icon->get_tag("xpos") << "," << icon->get_tag("ypos") << std::endl;
 }
 
+direction convert2direction(std::string dir)
+{
+    if (dir == "up")
+        return up;
+    else if (dir == "down")
+        return down;
+    else if (dir == "right")
+        return right;
+    else
+        return left;
+}
+
+void camera_translate(int x, GameObject *obj)
+{
+    direction dir = convert2direction(obj->get_tag("direction"));
+    switch (dir)
+	{
+        case up:
+            cam.camera_translate({0, -10});
+            break;
+        case down:
+            cam.camera_translate({0, 10});
+            break;
+        case right:
+            cam.camera_translate({10, 0});
+            break;
+        case left:
+            cam.camera_translate({-10, 0});
+            break;
+    }
+}
+
 void start_create_world(int x, GameObject *)
 {
     Scene *new_world_gen = new Scene("prometheus");
@@ -104,7 +137,24 @@ void start_create_world(int x, GameObject *)
     if (winy > screen_size.y)
         winy = screen_size.y;
 
+    Button *scroll_up = new Button("worldmap_w", 'w');
+    scroll_up->add_tag("direction", "up");
+    Button *scroll_down = new Button("worldmap_s", 's');
+    scroll_down->add_tag("direction", "down");
+    Button *scroll_right = new Button("worldmap_d", 'd');
+    scroll_right->add_tag("direction", "right");
+    Button *scroll_left = new Button("worldmap_a", 'a');
+    scroll_left->add_tag("direction", "left");
+    scroll_up->set_onclickevent(&camera_translate);
+    scroll_down->set_onclickevent(&camera_translate);
+    scroll_right->set_onclickevent(&camera_translate);
+    scroll_left->set_onclickevent(&camera_translate);
+
     new_world_gen->create_window("Prometheus", 0, 0, winx, winy, false);
+    new_world_gen->add_game_object(scroll_up);
+    new_world_gen->add_game_object(scroll_down);
+    new_world_gen->add_game_object(scroll_right);
+    new_world_gen->add_game_object(scroll_left);
 
     create_new_world(new_world_gen, "prometheus_begins", world_size);
 

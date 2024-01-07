@@ -22,7 +22,11 @@ SDL_Rect Camera::get_destination_rect(vec3D obj_pos, int h, int w)
     return result;
 }
 
-void Camera::set_camera_position(vec3D pos)
+void Camera::set_camera_position(vec3D pos) { position = pos; }
+
+void Camera::camera_translate(vec3D translate)
 {
-    position = pos;
+    position.x += translate.x;
+    position.y += translate.y;
+    position.z += translate.z;
 }
