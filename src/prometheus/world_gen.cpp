@@ -108,7 +108,6 @@ direction convert2direction(std::string dir)
 void camera_translate(int x, GameObject *obj)
 {
     direction dir = convert2direction(obj->get_tag("direction"));
-    std::cout << "Translating camera" << std::endl;
     switch (dir)
 	{
         case up:
