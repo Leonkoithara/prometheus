@@ -66,7 +66,7 @@ void GameManager::event_handler()
             case SDL_KEYDOWN:
                 if(it.second->get_window_id() == event.window.windowID)
                     temp = it.second;
-                temp->process_keystroke(event.key.keysym.sym, true);
+                temp->process_keystroke(event.key.keysym.sym, event.key.keysym.mod, true);
                 break;
             case SDL_QUIT:
                 quit();

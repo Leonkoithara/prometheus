@@ -65,9 +65,8 @@ void Scene::click_objects(int xpos, int ypos, int button_id, bool click)
     }
 }
 
-void Scene::process_keystroke(char key, bool down)
+void Scene::process_keystroke(unsigned int key, unsigned int mod, bool down)
 {
-    // Check button bindings
     for (auto &it : game_objects )
     {
         Button *obj = dynamic_cast<Button*>(it.second);
@@ -75,8 +74,11 @@ void Scene::process_keystroke(char key, bool down)
             continue;
         if (obj->get_keycode_binding() == key)
 		{
-            obj->click_object(1, true);
-            obj->click_object(1, false);
+            if ((obj->get_keycode_binding_mod() == 0 && ((mod & ~(KMOD_NUM)) | KMOD_NONE) == 0) || (obj->get_keycode_binding_mod() & mod) != 0)
+            {
+                obj->click_object(1, true);
+                obj->click_object(1, false);
+            }
         }
     }
 }

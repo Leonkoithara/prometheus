@@ -35,7 +35,7 @@ public:
 
     void add_game_object(GameObject*);
     void click_objects(int, int, int, bool);
-    void process_keystroke(char, bool);
+    void process_keystroke(unsigned int, unsigned int, bool);
 };
 
 #endif
