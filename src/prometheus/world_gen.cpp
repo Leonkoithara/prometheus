@@ -88,11 +88,6 @@ void modify_probablities(int *probablity_row, int p_delta, terrain t)
     }
 }
 
-void create_submap(int x, GameObject *icon)
-{
-    std::cout << "Clicked: " << icon->get_tag("terrain") << ", at: " << icon->get_tag("xpos") << "," << icon->get_tag("ypos") << std::endl;
-}
-
 direction convert2direction(std::string dir)
 {
     if (dir == "up")
@@ -156,7 +151,7 @@ void start_create_world(int x, GameObject *)
     new_world_gen->add_game_object(scroll_right);
     new_world_gen->add_game_object(scroll_left);
 
-    create_new_world(new_world_gen, "prometheus_begins", world_size);
+    create_new_world(new_world_gen, "begins", world_size);
 
     gm.add_scene(new_world_gen);
     gm.delete_scene("main_menu");
@@ -164,7 +159,7 @@ void start_create_world(int x, GameObject *)
 
 void create_new_world(Scene *prometheus, std::string world_name, int world_size, long seed)
 {
-    std::string world_filename = "res/save/world.dat";
+    std::string world_filename = "res/save/" + world_name + "/world.dat";
     int probablity_matrix[world_size][world_size][TERRAIN_TYPES];
     terrain terrain_matrix[world_size][world_size];
     if (seed == 0)
