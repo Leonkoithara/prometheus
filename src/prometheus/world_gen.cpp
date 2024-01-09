@@ -88,21 +88,11 @@ void modify_probablities(int *probablity_row, int p_delta, terrain t)
     }
 }
 
-direction convert2direction(std::string dir)
-{
-    if (dir == "up")
-        return up;
-    else if (dir == "down")
-        return down;
-    else if (dir == "right")
-        return right;
-    else
-        return left;
-}
-
 void camera_translate(int x, GameObject *obj)
 {
-    direction dir = convert2direction(obj->get_tag("direction"));
+    enum direction { up = 0, down, right, left };
+    int dir = obj->get_tag("direction")->longval;
+
     switch (dir)
 	{
         case up:
@@ -133,13 +123,13 @@ void start_create_world(int x, GameObject *)
         winy = screen_size.y;
 
     Button *scroll_up = new Button("worldmap_w", 'w');
-    scroll_up->add_tag("direction", "up");
+    scroll_up->add_tag("direction", (long)0);
     Button *scroll_down = new Button("worldmap_s", 's');
-    scroll_down->add_tag("direction", "down");
+    scroll_down->add_tag("direction", 1);
     Button *scroll_right = new Button("worldmap_d", 'd');
-    scroll_right->add_tag("direction", "right");
+    scroll_right->add_tag("direction", 2);
     Button *scroll_left = new Button("worldmap_a", 'a');
-    scroll_left->add_tag("direction", "left");
+    scroll_left->add_tag("direction", 3);
     scroll_up->set_onclickevent(&camera_translate);
     scroll_down->set_onclickevent(&camera_translate);
     scroll_right->set_onclickevent(&camera_translate);
@@ -244,9 +234,9 @@ void create_new_world(Scene *prometheus, std::string world_name, int world_size,
             terrain_count[terrain_matrix[i][j]]++;
             snprintf(go_name, 15, "%s_%d", terrain_name[terrain_matrix[i][j]], terrain_count[terrain_matrix[i][j]]);
             Button *new_symbol = new Button(std::string(go_name));
-            new_symbol->add_tag("terrain", texturefile_map[terrain_matrix[i][j]]);
-            new_symbol->add_tag("xpos", std::to_string(i));
-            new_symbol->add_tag("ypos", std::to_string(j));
+            new_symbol->add_tag("terrain", texturefile_map[terrain_matrix[i][j]].c_str());
+            new_symbol->add_tag("xpos", i);
+            new_symbol->add_tag("ypos", j);
             new_symbol->set_onclickevent(create_submap);
             new_symbol->set_position({(float)25*i, (float)25*j});
             new_symbol->add_texturefile("res/textures/" + texturefile_map[terrain_matrix[i][j]] + ".png", 0);

@@ -14,6 +14,7 @@ void create_main_menu()
     GameObject *title = new GameObject("title");
     title->set_position({100, 0});
     title->add_texturefile("res/textures/prometheus.png", 0);
+    title->add_tag("key", "value");
 
     Button *create_world_button = new Button("create_world_button", 'n', KMOD_CTRL);
     create_world_button->set_position({190, 150});

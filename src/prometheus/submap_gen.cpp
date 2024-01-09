@@ -2,5 +2,5 @@
 
 void create_submap(int x, GameObject *icon)
 {
-    std::cout << "Clicked: " << icon->get_tag("terrain") << ", at: " << icon->get_tag("xpos") << "," << icon->get_tag("ypos") << std::endl;
+    std::cout << "Clicked: " << icon->get_tag("terrain")->strval << ", at: " << icon->get_tag("xpos")->longval << "," << icon->get_tag("ypos")->longval << std::endl;
 }
