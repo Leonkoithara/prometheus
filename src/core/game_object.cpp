@@ -15,7 +15,11 @@ GameObject::GameObject(std::string nm)
     start();
 }
 
-GameObject::~GameObject() {}
+GameObject::~GameObject()
+{
+    for (auto &t : tags)
+        delete t.second;
+}
 
 void GameObject::set_render_rect_defaults()
 {
@@ -52,11 +56,21 @@ void GameObject::add_texturefile(std::string texturefile, int render_order)
     textures[render_order] = std::pair<std::string, SDL_Texture*>(texturefile, NULL);
 }
 
-std::string GameObject::get_tag(std::string key)
+void GameObject::add_tag(std::string key, const char *value)
+{
+    tags[key] = new tag(value);
+}
+
+void GameObject::add_tag(std::string key, long value)
+{
+    tags[key] = new tag(value);
+}
+
+tag* GameObject::get_tag(std::string key)
 {
     auto search = tags.find(key);
     if (search != tags.end())
         return search->second;
     else
-        return "Not found";
+        return nullptr;
 }
