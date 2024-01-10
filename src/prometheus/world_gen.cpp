@@ -115,7 +115,7 @@ void camera_translate(int x, GameObject *obj)
 void start_create_world(int x, GameObject *)
 {
     Scene *new_world_gen = new Scene("prometheus");
-    world.world_size = 50;
+    world.world_size = 100;
 
     int winx = world.world_size*25, winy = world.world_size*25;
     vec3D screen_size = gm.get_screen_size();
@@ -162,18 +162,16 @@ void create_new_world(Scene *prometheus, std::string world_name)
     else
         srand(world.seed);
 
-    int p = 100/TERRAIN_TYPES;
+    int p = 100/TERRAIN_TYPES, rem = 100%TERRAIN_TYPES;
     for (int i=0; i<world.world_size; i++)
     {
         for (int j=0; j<world.world_size; j++)
         {
             for (int k=plains; k<TERRAIN_TYPES; k++)
             {
-                if (i == 0 || j == 0 || i == world.world_size-1 || j == world.world_size-1)
-                    probablity_matrix[i][j][k] = k==water||k==mountains?50:0;
-                else
-                    probablity_matrix[i][j][k] = p;
+                probablity_matrix[i][j][k] = p;
             }
+            probablity_matrix[i][j][rand()%TERRAIN_TYPES] += rem;
         }
     }
 
@@ -188,21 +186,26 @@ void create_new_world(Scene *prometheus, std::string world_name)
 			{
                 case plains:
                 case forests:
-                    if (i+1 < world.world_size-1)
-                        modify_probablities(probablity_matrix[i+1][j], (TERRAIN_TYPES-1)*5, t);
-                    if (j+1 < world.world_size-1)
-                        modify_probablities(probablity_matrix[i][j+1], (TERRAIN_TYPES-1)*5, t);
-                    if (i+1 < world.world_size-1 && j+1 < world.world_size-1)
-                        modify_probablities(probablity_matrix[i+1][j+1], (TERRAIN_TYPES-1)*5, t);
-                    if (i-1 > 0 && j+1 < world.world_size-1)
-                        modify_probablities(probablity_matrix[i-1][j+1], (TERRAIN_TYPES-1)*5, t);
+                    if (i+1 < world.world_size)
+                        modify_probablities(probablity_matrix[i+1][j], (TERRAIN_TYPES-1)*5.5, t);
+                    if (j+1 < world.world_size)
+                        modify_probablities(probablity_matrix[i][j+1], (TERRAIN_TYPES-1)*5.5, t);
+                    if (i+1 < world.world_size && j+1 < world.world_size)
+                        modify_probablities(probablity_matrix[i+1][j+1], (TERRAIN_TYPES-1)*5.5, t);
+                    if (i-1 > 0 && j+1 < world.world_size)
+                        modify_probablities(probablity_matrix[i-1][j+1], (TERRAIN_TYPES-1)*5.5, t);
                     break;
                 case mountains:
-                case water:
                     if (i+1 < world.world_size)
                         modify_probablities(probablity_matrix[i+1][j], (TERRAIN_TYPES-1)*7, t);
                     if (j+1 < world.world_size)
                         modify_probablities(probablity_matrix[i][j+1], (TERRAIN_TYPES-1)*7, t);
+                    break;
+                case water:
+                    if (i+1 < world.world_size)
+                        modify_probablities(probablity_matrix[i+1][j], (TERRAIN_TYPES-1)*8, t);
+                    if (j+1 < world.world_size)
+                        modify_probablities(probablity_matrix[i][j+1], (TERRAIN_TYPES-1)*8, t);
                     break;
                 case human_civ:
                 case civ_ruins:
