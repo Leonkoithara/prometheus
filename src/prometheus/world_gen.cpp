@@ -12,6 +12,8 @@
 #include "type_structs.h"
 #include "world_gen.h"
 
+worldgen_data world;
+
 
 terrain get_terrain(int *probablity_row)
 {
@@ -113,9 +115,9 @@ void camera_translate(int x, GameObject *obj)
 void start_create_world(int x, GameObject *)
 {
     Scene *new_world_gen = new Scene("prometheus");
-    int world_size = 50;
+    world.world_size = 50;
 
-    int winx = world_size*25, winy = world_size*25;
+    int winx = world.world_size*25, winy = world.world_size*25;
     vec3D screen_size = gm.get_screen_size();
     if (winx > screen_size.x)
         winx = screen_size.x;
@@ -141,30 +143,33 @@ void start_create_world(int x, GameObject *)
     new_world_gen->add_game_object(scroll_right);
     new_world_gen->add_game_object(scroll_left);
 
-    create_new_world(new_world_gen, "begins", world_size);
+    create_new_world(new_world_gen, "begins");
 
     gm.add_scene(new_world_gen);
     gm.delete_scene("main_menu");
 }
 
-void create_new_world(Scene *prometheus, std::string world_name, int world_size, long seed)
+void create_new_world(Scene *prometheus, std::string world_name)
 {
     std::string world_filename = "res/save/" + world_name + "/world.dat";
-    int probablity_matrix[world_size][world_size][TERRAIN_TYPES];
-    terrain terrain_matrix[world_size][world_size];
-    if (seed == 0)
+    int probablity_matrix[world.world_size][world.world_size][TERRAIN_TYPES];
+    world.terrain_matrix = (terrain**)malloc(world.world_size * sizeof(terrain*));
+    for (int i=0; i<world.world_size; i++)
+        world.terrain_matrix[i] = (terrain*)malloc(world.world_size * sizeof(terrain));
+
+    if (world.seed == 0)
         srand(time(NULL));
     else
-        srand(seed);
+        srand(world.seed);
 
     int p = 100/TERRAIN_TYPES;
-    for (int i=0; i<world_size; i++)
+    for (int i=0; i<world.world_size; i++)
     {
-        for (int j=0; j<world_size; j++)
+        for (int j=0; j<world.world_size; j++)
         {
             for (int k=plains; k<TERRAIN_TYPES; k++)
             {
-                if (i == 0 || j == 0 || i == world_size-1 || j == world_size-1)
+                if (i == 0 || j == 0 || i == world.world_size-1 || j == world.world_size-1)
                     probablity_matrix[i][j][k] = k==water||k==mountains?50:0;
                 else
                     probablity_matrix[i][j][k] = p;
@@ -172,31 +177,31 @@ void create_new_world(Scene *prometheus, std::string world_name, int world_size,
         }
     }
 
-    for (int i=0; i<world_size; i++)
+    for (int i=0; i<world.world_size; i++)
     {
-        for (int j=0; j<world_size; j++)
+        for (int j=0; j<world.world_size; j++)
         {
             terrain t = get_terrain(probablity_matrix[i][j]);
-            terrain_matrix[i][j] = t;
+            world.terrain_matrix[i][j] = t;
             int rad = 3;
             switch (t)
 			{
                 case plains:
                 case forests:
-                    if (i+1 < world_size-1)
+                    if (i+1 < world.world_size-1)
                         modify_probablities(probablity_matrix[i+1][j], (TERRAIN_TYPES-1)*5, t);
-                    if (j+1 < world_size-1)
+                    if (j+1 < world.world_size-1)
                         modify_probablities(probablity_matrix[i][j+1], (TERRAIN_TYPES-1)*5, t);
-                    if (i+1 < world_size-1 && j+1 < world_size-1)
+                    if (i+1 < world.world_size-1 && j+1 < world.world_size-1)
                         modify_probablities(probablity_matrix[i+1][j+1], (TERRAIN_TYPES-1)*5, t);
-                    if (i-1 > 0 && j+1 < world_size-1)
+                    if (i-1 > 0 && j+1 < world.world_size-1)
                         modify_probablities(probablity_matrix[i-1][j+1], (TERRAIN_TYPES-1)*5, t);
                     break;
                 case mountains:
                 case water:
-                    if (i+1 < world_size)
+                    if (i+1 < world.world_size)
                         modify_probablities(probablity_matrix[i+1][j], (TERRAIN_TYPES-1)*7, t);
-                    if (j+1 < world_size)
+                    if (j+1 < world.world_size)
                         modify_probablities(probablity_matrix[i][j+1], (TERRAIN_TYPES-1)*7, t);
                     break;
                 case human_civ:
@@ -205,7 +210,7 @@ void create_new_world(Scene *prometheus, std::string world_name, int world_size,
                     {
                         for (int yr=-1*rad; yr<=rad; yr++)
                         {
-                            if (i+xr < world_size && j+yr < world_size && i+xr >= 0 && j+yr >=0 && xr != 0 && yr != 0)
+                            if (i+xr < world.world_size && j+yr < world.world_size && i+xr >= 0 && j+yr >=0 && xr != 0 && yr != 0)
                             {
                                 modify_probablities(probablity_matrix[i+xr][j+yr], -15, human_civ);
                                 modify_probablities(probablity_matrix[i+xr][j+yr], -15, civ_ruins);
@@ -226,20 +231,20 @@ void create_new_world(Scene *prometheus, std::string world_name, int world_size,
     const char* terrain_name[6] = {
         "plains", "hills", "trees", "water", "human_civ", "civ_ruins"
     };
-    for (int i=0; i<world_size; i++)
+    for (int i=0; i<world.world_size; i++)
 	{
-        for (int j=0; j<world_size; j++)
+        for (int j=0; j<world.world_size; j++)
         {
             char go_name[15];
-            terrain_count[terrain_matrix[i][j]]++;
-            snprintf(go_name, 15, "%s_%d", terrain_name[terrain_matrix[i][j]], terrain_count[terrain_matrix[i][j]]);
+            terrain_count[world.terrain_matrix[i][j]]++;
+            snprintf(go_name, 15, "%s_%d", terrain_name[world.terrain_matrix[i][j]], terrain_count[world.terrain_matrix[i][j]]);
             Button *new_symbol = new Button(std::string(go_name));
-            new_symbol->add_tag("terrain", texturefile_map[terrain_matrix[i][j]].c_str());
+            new_symbol->add_tag("terrain", texturefile_map[world.terrain_matrix[i][j]].c_str());
             new_symbol->add_tag("xpos", i);
             new_symbol->add_tag("ypos", j);
             new_symbol->set_onclickevent(create_submap);
             new_symbol->set_position({(float)25*i, (float)25*j});
-            new_symbol->add_texturefile("res/textures/" + texturefile_map[terrain_matrix[i][j]] + ".png", 0);
+            new_symbol->add_texturefile("res/textures/" + texturefile_map[world.terrain_matrix[i][j]] + ".png", 0);
             prometheus->add_game_object(new_symbol);
         }
     }
