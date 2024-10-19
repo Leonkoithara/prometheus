@@ -2,8 +2,8 @@
 #define WORLDGEN
 #include <iostream>
 
-#include "game_object.h"
-#include "scene.h"
+#include <game_object.h>
+#include <scene.h>
 
 #define TERRAIN_TYPES 6
 
@@ -27,43 +27,31 @@ struct submap_data
     }
 };
 
-struct worldgen_data
+class WorldGen
 {
+private:
     std::string name;
     int world_size;
     long seed;
     terrain **terrain_matrix;
     submap_data **submap_data_matrix;
     bool **submap_generated_flag;
+    int ***probablity_matrix;
 
-    worldgen_data(int size, std::string nm)
-    {
-        name = nm;
-        world_size = size;
-        seed = 0;
-        terrain_matrix = new terrain*[world_size];
-        for( int i=0; i<world_size; i++)
-            terrain_matrix[i] = new terrain[world_size];
-        submap_generated_flag = new bool*[world_size];
-        for( int i=0; i<world_size; i++)
-        {
-            submap_generated_flag[i] = new bool[world_size];
-            for( int j=0; j<world_size; j++)
-                submap_generated_flag[i][j] = false;
-        }
-        submap_data_matrix = new submap_data*[world_size];
-        for( int i=0; i<world_size; i++)
-        {
-            submap_data_matrix[i] = new submap_data[world_size];
-            for( int j=0; j<world_size; j++)
-                submap_data_matrix[i][j] = submap_data(world_size);
-        }
-    }
+public:
+    WorldGen(int, std::string);
+
+    int get_world_size() { return world_size; }
+
+    void set_terrain_matrix();
+    void modify_probablities(int, int, int, terrain);
+    void populate_objects(Scene*);
+    void set_terrain_elevation(long, long);
 };
 
 
 void start_create_world(int, GameObject *);
-void create_submap(int, GameObject *);
+void create_submap(int, GameObject*);
 
-extern worldgen_data *world;
+extern WorldGen *world;
 #endif

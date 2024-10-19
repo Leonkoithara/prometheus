@@ -1,7 +1,7 @@
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
-add_library(prometheus OBJECT menu.cpp world_gen.cpp submap_gen.cpp)
+add_library(prometheus OBJECT menu.cpp world_gen.cpp start_world_gen.cpp submap_gen.cpp)
 
 target_include_directories(
   prometheus

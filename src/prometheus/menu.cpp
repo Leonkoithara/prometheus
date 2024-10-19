@@ -1,8 +1,8 @@
-#include "button.h"
-#include "game_object.h"
-#include "game_manager.h"
-#include "scene.h"
-#include "world_gen.h"
+#include <button.h>
+#include <game_object.h>
+#include <game_manager.h>
+#include <scene.h>
+#include <world_gen.h>
 
 void quit_game(int x, GameObject *) { gm.quit(); }
 
