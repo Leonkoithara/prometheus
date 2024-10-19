@@ -63,9 +63,7 @@ struct worldgen_data
 
 
 void start_create_world(int, GameObject *);
-void create_new_world(Scene *, std::string, int);
 void create_submap(int, GameObject *);
-void set_elevation();
 
 extern worldgen_data *world;
 #endif
