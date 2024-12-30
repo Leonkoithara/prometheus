@@ -4,6 +4,7 @@
 
 #include <game_object.h>
 #include <scene.h>
+#include <character.h>
 
 #define TERRAIN_TYPES 6
 
@@ -37,6 +38,7 @@ private:
     submap_data **submap_data_matrix;
     bool **submap_generated_flag;
     int ***probablity_matrix;
+    Player *player;
 
 public:
     WorldGen(int, std::string);
@@ -47,11 +49,13 @@ public:
     void modify_probablities(int, int, int, terrain);
     void populate_objects(Scene*);
     void set_terrain_elevation(long, long);
+    void create_player();
+    void spawn_player();
 };
 
 
 void start_create_world(int, GameObject *);
-void create_submap(int, GameObject*);
+void create_first_submap(int, GameObject*);
 
 extern WorldGen *world;
 #endif
