@@ -1,6 +1,8 @@
 #include <SDL_rect.h>
 #include <SDL_render.h>
 #include <SDL_ttf.h>
+#include <SDL_video.h>
+#include <GL/glew.h>
 
 #include "game_manager.h"
 #include "game_object.h"
@@ -11,6 +13,7 @@ GameManager gm;
 
 GameManager::GameManager()
 {
+    opengl_init_complete = false;
     running = true;
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)

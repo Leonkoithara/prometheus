@@ -191,7 +191,7 @@ void WorldGen::populate_objects(Scene *prometheus)
         "plains", "hills", "trees", "water", "human_civ", "civ_ruins"
     };
     for (int i=0; i<world_size; i++)
-	{
+    {
         for (int j=0; j<world_size; j++)
         {
             char go_name[15];
@@ -207,6 +207,8 @@ void WorldGen::populate_objects(Scene *prometheus)
             prometheus->add_game_object(new_symbol);
         }
     }
+
+    std::cout << "Finished populating map objects" << std::endl;
 }
 
 void WorldGen::create_player()

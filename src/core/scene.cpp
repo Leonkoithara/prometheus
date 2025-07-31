@@ -7,6 +7,7 @@
 
 #include "button.h"
 #include "camera.h"
+#include "game_manager.h"
 #include "game_object.h"
 #include "scene.h"
 
@@ -15,13 +16,17 @@ Scene::Scene(std::string scene_name)
     name = scene_name;
     update_scene = true;
     active_scene = true;
+    vao = 0;
+    gl_render_ready = 0;
 }
 
 void Scene::create_window(std::string title, int xpos, int ypos, int width, int height, bool full_screen)
 {
     int flags = 0;
     if (full_screen)
-        flags = SDL_WINDOW_FULLSCREEN;
+        flags = SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL;
+    else
+        flags = SDL_WINDOW_OPENGL;
 
     window = SDL_CreateWindow(title.c_str(), xpos, ypos, width, height, flags);
     if (!window)
@@ -37,6 +42,8 @@ void Scene::create_window(std::string title, int xpos, int ypos, int width, int 
         exit(1);
     }
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    opengl_contxt = SDL_GL_CreateContext(window);
+    gm.init_opengl();
     active_scene = true;
 }
 
@@ -129,6 +136,64 @@ void Scene::set_game_obj_texture(GameObject *obj)
     obj->set_render_rect_defaults();
 }
 
+void Scene::set_vao(const void *vao_data)
+{
+    glCreateVertexArrays(1, &vao);
+    glBindVertexArray( vao );
+    unsigned int buffer;
+    glGenBuffers(1, &buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer);
+    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), vao_data, GL_STATIC_DRAW);
+    gl_render_ready |= 1;
+}
+
+void Scene::create_shader_program(std::string vertex_shader, std::string fragment_shader)
+{
+    shader_program = glCreateProgram();
+    const char* src_v = vertex_shader.c_str();
+    const char* src_f = fragment_shader.c_str();
+
+    unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vs, 1, &src_v, NULL);
+    glCompileShader(vs);
+
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vs, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fs, 1, &src_f, NULL);
+    glCompileShader(fs);
+
+    glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fs, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+
+    glAttachShader(shader_program, vs);
+    glAttachShader(shader_program, fs);
+    glLinkProgram(shader_program);
+
+    glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+    if (!success)
+    {
+        glGetProgramInfoLog(shader_program, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+    }
+    glUseProgram(shader_program);
+    glDeleteShader(vs);
+    glDeleteShader(fs);
+
+    gl_render_ready |= 2;
+}
+
 void Scene::render()
 {
     if (active_scene)
@@ -152,7 +217,20 @@ void Scene::render()
             for (auto itr : textures)
                 SDL_RenderCopy(renderer, itr.second.second, &src, &dest);
         }
-        
+
+        SDL_RenderFlush(renderer);
+
+        if (gl_render_ready == 3)
+        {
+            SDL_GL_MakeCurrent(window, opengl_contxt);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            glDrawArrays(GL_TRIANGLES, 0, 3);
+        }
+
         SDL_RenderPresent(renderer);
     }
 }
