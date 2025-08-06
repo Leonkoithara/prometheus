@@ -48,8 +48,8 @@ void create_new_world(Scene *prometheus, std::string world_name, int world_size)
 
 void start_create_world(int x, GameObject *)
 {
-    Scene *new_world_gen = new Scene("prometheus");
-    int world_size = 100;
+    Scene *new_world_gen = new Scene("world_map");
+    int world_size = 50;
     std::string world_name = "begins";
 
     int winx = world_size*25, winy = world_size*25;

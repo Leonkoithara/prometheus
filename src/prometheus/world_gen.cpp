@@ -3,6 +3,7 @@
 #include <button.h>
 #include <scene.h>
 #include <world_gen.h>
+#include <character.h>
 
 
 terrain get_terrain(int *probablity_row)
@@ -190,7 +191,7 @@ void WorldGen::populate_objects(Scene *prometheus)
         "plains", "hills", "trees", "water", "human_civ", "civ_ruins"
     };
     for (int i=0; i<world_size; i++)
-	{
+    {
         for (int j=0; j<world_size; j++)
         {
             char go_name[15];
@@ -200,30 +201,32 @@ void WorldGen::populate_objects(Scene *prometheus)
             new_symbol->add_tag("terrain", texturefile_map[terrain_matrix[i][j]].c_str());
             new_symbol->add_tag("xpos", i);
             new_symbol->add_tag("ypos", j);
-            new_symbol->set_onclickevent(create_submap);
+            new_symbol->set_onclickevent(create_first_submap);
             new_symbol->set_position({(float)25*i, (float)25*j});
             new_symbol->add_texturefile("res/textures/" + texturefile_map[terrain_matrix[i][j]] + ".png", 0);
             prometheus->add_game_object(new_symbol);
         }
     }
+
+    std::cout << "Finished populating map objects" << std::endl;
 }
 
-void WorldGen::set_terrain_elevation(long x, long y)
+void WorldGen::create_player()
 {
-    // set elevation to 0 and terrain to plains
-    submap_generated_flag[x][y] = true;
-    for( int i=0; i<world_size; i++)
-    {
-        for( int j=0; j<world_size; j++)
-        {
-            submap_data_matrix[x][y].elevation_matrix[i][j] = 0;
-            submap_data_matrix[x][y].terrain_matrix[i][j] = plains;
-        }
-    }
+    //currently do nothing but later add player customizations
+    player = new Player("Leon");
 }
 
-void create_submap(int x, GameObject *icon)
+void WorldGen::spawn_player()
+{
+    player->spawn_player();
+}
+
+void create_first_submap(int x, GameObject *icon)
 {
     std::cout << "Clicked: " << icon->get_tag("terrain")->strval << ", at: " << icon->get_tag("xpos")->longval << "," << icon->get_tag("ypos")->longval << std::endl;
     world->set_terrain_elevation(icon->get_tag("xpos")->longval, icon->get_tag("ypos")->longval);
+
+    world->create_player();
+    world->spawn_player();
 }

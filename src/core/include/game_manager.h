@@ -19,6 +19,7 @@ private:
     vec3D screen_size;
     std::unordered_map<std::string, Scene*> scenes;
     std::vector<Scene*> delete_scene_queue;
+    bool opengl_init_complete;
 public:
     GameManager();
     ~GameManager();
@@ -39,6 +40,19 @@ public:
     void add_game_object(GameObject*, std::string);
 
     void delete_scene(std::string);
+
+    void init_opengl()
+    {
+        if(opengl_init_complete)
+            return;
+        else
+        {
+            if (glewInit() != GLEW_OK)
+                exit(1);
+            std::cout << glGetString(GL_VERSION) << std::endl;
+            opengl_init_complete = true;
+        }
+    }
 };
 
 extern GameManager gm;
