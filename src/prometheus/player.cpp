@@ -17,7 +17,7 @@ void Player::spawn_player()
              0.5f, -0.5f,
              0.0f,  0.5f
         };
-        player_scene->set_vao(position);
+        player_scene->set_vao(position, 6 * sizeof(float));
 
 
         std::string vertexShader =
@@ -36,4 +36,9 @@ void Player::spawn_player()
             "}";
         player_scene->create_shader_program(vertexShader, fragmentShader);
     }
+
+    GameObject *title = new GameObject("title");
+    title->set_position({100, 0});
+    title->add_texturefile("res/textures/prometheus.png", 0);
+    player_scene->add_game_object(title);
 }

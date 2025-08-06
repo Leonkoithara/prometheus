@@ -3,7 +3,6 @@
 
 #include <unordered_map>
 #include <string>
-#include <SDL_video.h>
 #include <GL/glew.h>
 
 #include "game_object.h"
@@ -34,7 +33,7 @@ public:
     void set_active_scene(bool active) { active_scene = active; }
     void set_update_scene(bool update) { update_scene = update; }
     void set_game_obj_texture(GameObject*);
-    void set_vao(const void*);
+    void set_vao(const void*, int);
 
     GameObject* get_scene_game_obj(std::string);
     std::string get_scene_name(){ return name; }

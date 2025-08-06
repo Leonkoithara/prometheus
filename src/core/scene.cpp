@@ -136,14 +136,14 @@ void Scene::set_game_obj_texture(GameObject *obj)
     obj->set_render_rect_defaults();
 }
 
-void Scene::set_vao(const void *vao_data)
+void Scene::set_vao(const void *vao_data, int size)
 {
     glCreateVertexArrays(1, &vao);
     glBindVertexArray( vao );
     unsigned int buffer;
     glGenBuffers(1, &buffer);
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), vao_data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, size, vao_data, GL_STATIC_DRAW);
     gl_render_ready |= 1;
 }
 
@@ -225,8 +225,6 @@ void Scene::render()
             SDL_GL_MakeCurrent(window, opengl_contxt);
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-
-            glClear(GL_COLOR_BUFFER_BIT);
 
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
