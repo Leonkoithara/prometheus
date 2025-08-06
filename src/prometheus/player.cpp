@@ -1,5 +1,7 @@
 #include <character.h>
 #include <game_manager.h>
+#include <scene.h>
+
 #include <GL/glew.h>
 
 
@@ -18,23 +20,9 @@ void Player::spawn_player()
              0.0f,  0.5f
         };
         player_scene->set_vao(position, 6 * sizeof(float));
-
-
-        std::string vertexShader =
-            "#version 330 core\n"
-            "layout (location = 0) in vec4 position;\n"
-            "void main()\n"
-            "{\n"
-            "gl_Position = position;\n"
-            "}";
-        std::string fragmentShader =
-            "#version 330 core\n"
-            "layout (location = 0) out vec4 color;\n"
-            "void main()\n"
-            "{\n"
-            "color = vec4(1.0, 0.0, 0.0, 1.0);\n"
-            "}";
-        player_scene->create_shader_program(vertexShader, fragmentShader);
+        player_scene->read_shader_code("res/shaders/triangle.vert", VERTEX_SHADER);
+        player_scene->read_shader_code("res/shaders/triangle.frag", FRAGMENT_SHADER);
+        player_scene->create_shader_program();
     }
 
     GameObject *title = new GameObject("title");

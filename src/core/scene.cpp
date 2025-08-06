@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 #include <SDL_image.h>
 #include <SDL_rect.h>
@@ -147,7 +149,21 @@ void Scene::set_vao(const void *vao_data, int size)
     gl_render_ready |= 1;
 }
 
-void Scene::create_shader_program(std::string vertex_shader, std::string fragment_shader)
+void Scene::read_shader_code(std::string filename, enum SHADER_TYPE type)
+{
+    std::ifstream t(filename);
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    
+    if(type == VERTEX_SHADER)
+        vertex_shader = buffer.str();
+    else if (type == FRAGMENT_SHADER)
+        fragment_shader = buffer.str();
+    else
+        std::cout << "Invalid shader type" << std::endl;
+}
+
+void Scene::create_shader_program()
 {
     shader_program = glCreateProgram();
     const char* src_v = vertex_shader.c_str();

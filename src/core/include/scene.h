@@ -8,6 +8,8 @@
 #include "game_object.h"
 
 
+enum SHADER_TYPE { VERTEX_SHADER = 0, FRAGMENT_SHADER };
+
 class Scene
 {
 private:
@@ -21,6 +23,8 @@ private:
     GLuint vao;
     unsigned int shader_program;
     int gl_render_ready;
+    std::string vertex_shader;
+    std::string fragment_shader;
 public:
     Scene(std::string);
     ~Scene();
@@ -42,7 +46,8 @@ public:
     void add_game_object(GameObject*);
     void click_objects(int, int, int, bool);
     void process_keystroke(unsigned int, unsigned int, bool);
-    void create_shader_program(std::string, std::string);
+    void create_shader_program();
+    void read_shader_code(std::string, enum SHADER_TYPE);
 };
 
 #endif
