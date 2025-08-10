@@ -5,7 +5,8 @@
 #include <string>
 #include <GL/glew.h>
 
-#include "game_object.h"
+#include <game_object.h>
+#include <type_structs.h>
 
 
 enum SHADER_TYPE { VERTEX_SHADER = 0, FRAGMENT_SHADER };
@@ -29,8 +30,7 @@ public:
     Scene(std::string);
     ~Scene();
 
-    void create_window(std::string, int, int, int, int, bool);
-    GameObject* instantiate_game_object(std::string, float, float);
+    void create_window(std::string, int, int, int, int, vec3D, bool);
     void update();
     void render();
 

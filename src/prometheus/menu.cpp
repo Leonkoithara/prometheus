@@ -9,7 +9,7 @@ void quit_game(int x, GameObject *) { gm.quit(); }
 void create_main_menu()
 {
     Scene *main_menu = new Scene("main_menu");
-    main_menu->create_window("Main Menu", 100, 100, 640, 480, false);
+    main_menu->create_window("Main Menu", 100, 100, 640, 480, {0, 0, 0}, false);
     
     GameObject *title = new GameObject("title");
     title->set_position({100, 0});

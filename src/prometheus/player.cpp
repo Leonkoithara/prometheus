@@ -8,7 +8,7 @@
 void Player::spawn_player()
 {
     Scene *player_scene = new Scene("player_scene");
-    player_scene->create_window("Prometheus", 0, 0, 1000, 1000, false);
+    player_scene->create_window("Prometheus", 0, 0, 1000, 1000, {0, 0, 0}, false);
     gm.add_scene(player_scene);
     gm.delete_scene("world_map");
 
