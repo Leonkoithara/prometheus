@@ -72,7 +72,7 @@ void start_create_world(int x, GameObject *)
     scroll_right->set_onclickevent(&camera_translate);
     scroll_left->set_onclickevent(&camera_translate);
 
-    new_world_gen->create_window("Prometheus", 0, 0, winx, winy, false);
+    new_world_gen->create_window("Prometheus", 0, 0, winx, winy, {0, 0, 0}, false);
     new_world_gen->add_game_object(scroll_up);
     new_world_gen->add_game_object(scroll_down);
     new_world_gen->add_game_object(scroll_right);

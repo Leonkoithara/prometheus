@@ -22,7 +22,7 @@ Scene::Scene(std::string scene_name)
     gl_render_ready = 0;
 }
 
-void Scene::create_window(std::string title, int xpos, int ypos, int width, int height, bool full_screen)
+void Scene::create_window(std::string title, int xpos, int ypos, int width, int height, vec3D bg_color, bool full_screen)
 {
     int flags = 0;
     if (full_screen)
@@ -43,23 +43,10 @@ void Scene::create_window(std::string title, int xpos, int ypos, int width, int 
         std::cout << "Renderer could not be created" << std::endl;
         exit(1);
     }
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer, bg_color.x, bg_color.y, bg_color.z, 255);
     opengl_contxt = SDL_GL_CreateContext(window);
     gm.init_opengl();
     active_scene = true;
-}
-
-GameObject* Scene::instantiate_game_object(std::string game_obj_name, float pos_x, float pos_y)
-{
-    auto it = game_objects.find(game_obj_name);
-    if (it == game_objects.end())
-    {
-        GameObject *obj = new GameObject(game_obj_name);
-        obj->set_position({pos_x, pos_y, 0});
-        game_objects[game_obj_name] = obj;
-        return obj;
-    }
-    return NULL;
 }
 
 void Scene::click_objects(int xpos, int ypos, int button_id, bool click)
