@@ -25,14 +25,12 @@ Button::Button(std::string name) : GameObject(name)
     add_texturefile("res/textures/button.png", 0);
     set_mouseonobject(change_bg_on_highlight);
     set_mouseoffobject(change_bg_off_highlight);
-    highlight = false;
 }
 Button::Button(std::string name, unsigned int key, unsigned int mod) : GameObject(name, key, mod)
 {
     add_texturefile("res/textures/button.png", 0);
     set_mouseonobject(change_bg_on_highlight);
     set_mouseoffobject(change_bg_off_highlight);
-    highlight = false;
 }
 
 

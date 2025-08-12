@@ -10,7 +10,6 @@ class Button : public GameObject
 private:
     std::string text;
     vec3D text_color;
-    bool highlight;
 public:
     Button(std::string);
     Button(std::string, unsigned int, unsigned int = 0);
