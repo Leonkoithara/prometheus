@@ -53,11 +53,19 @@ void Scene::click_objects(int xpos, int ypos, int button_id, bool click)
 {
     for (auto &it : game_objects )
     {
-        Button *obj = dynamic_cast<Button*>(it.second);
-        if (obj == NULL)
-            continue;
-        if (obj->check_clicked(xpos, ypos))
+        GameObject *obj = it.second;
+        if (obj->check_mouse_on(xpos, ypos))
             obj->click_object(button_id, click);
+    }
+}
+
+void Scene::mouse_update_event(int xpos, int ypos)
+{
+    for (auto &it : game_objects )
+    {
+        GameObject *obj = it.second;
+        if (obj->check_mouse_on(xpos, ypos))
+            obj->mouse_on_object();
     }
 }
 
@@ -107,8 +115,11 @@ void Scene::set_game_obj_texture(GameObject *obj)
             {
                 Button *butt = dynamic_cast<Button*>(obj);
                 TTF_Font *sans = TTF_OpenFont("res/fonts/FreeSans.ttf", 24);
-                std::cout << TTF_GetError() << std::endl;
-                SDL_Color white = {225, 225, 225};
+                const char *ttf_err = TTF_GetError();
+                if (std::strlen(ttf_err) != 0)
+                    std::cout << ttf_err << std::endl;
+                vec3D tmp = butt->get_text_color();
+                SDL_Color white = {static_cast<unsigned char>(tmp.x), static_cast<unsigned char>(tmp.y), static_cast<unsigned char>(tmp.z)};
                 SDL_Surface *msg_surface = TTF_RenderText_Solid(sans, butt->get_text().c_str(), white);
                 tex = SDL_CreateTextureFromSurface(renderer, msg_surface);
             }

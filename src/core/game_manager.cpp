@@ -13,6 +13,7 @@ GameManager gm;
 
 GameManager::GameManager()
 {
+    start_time = time(NULL);
     opengl_init_complete = false;
     running = true;
 
@@ -53,6 +54,11 @@ void GameManager::event_handler()
                 if(it.second->get_window_id() == event.window.windowID)
                     temp = it.second;
                 temp->click_objects(event.button.x, event.button.y, event.button.button, false);
+                break;
+            case SDL_MOUSEMOTION:
+                if(it.second->get_window_id() == event.window.windowID)
+                    temp = it.second;
+                temp->mouse_update_event(event.motion.x, event.motion.y);
                 break;
             case SDL_WINDOWEVENT:
                 // If last scene clean when SDL_QUIT event is triggered

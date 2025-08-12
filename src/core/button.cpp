@@ -1,57 +1,53 @@
 #include <SDL_rect.h>
 #include <SDL_surface.h>
 
-#include "button.h"
-#include "game_object.h"
-#include "type_structs.h"
+#include <button.h>
+#include <game_object.h>
+#include <type_structs.h>
 
 
-void button_empty_callback(int x, GameObject *){};
+void change_bg_on_highlight(GameObject *button)
+{
+    Button *butt = static_cast<Button*>(button);
+    butt->add_texturefile("res/textures/button_hlgt.png", 0);
+    butt->set_text(butt->get_text(), {255, 0, 0});
+}
+
+void change_bg_off_highlight(GameObject *button)
+{
+    Button *butt = static_cast<Button*>(button);
+    butt->add_texturefile("res/textures/button.png", 0);
+    butt->set_text(butt->get_text(), {255, 255, 255});
+}
+
 Button::Button(std::string name) : GameObject(name)
 {
-    clicked = -1;
-    whileclickevent = &button_empty_callback;
-    onceclickevent = &button_empty_callback;
+    add_texturefile("res/textures/button.png", 0);
+    set_mouseonobject(change_bg_on_highlight);
+    set_mouseoffobject(change_bg_off_highlight);
+    highlight = false;
 }
-Button::Button(std::string name, unsigned int key, unsigned int mod) : Button(name)
+Button::Button(std::string name, unsigned int key, unsigned int mod) : GameObject(name, key, mod)
 {
-    keycode_binding = key;
-    keycode_binding_mod = mod;
+    add_texturefile("res/textures/button.png", 0);
+    set_mouseonobject(change_bg_on_highlight);
+    set_mouseoffobject(change_bg_off_highlight);
+    highlight = false;
 }
 
-bool Button::check_clicked(int xpos, int ypos)
-{
-    SDL_Rect rect = this->get_dest_render_rect();
-    if (
-        xpos >= rect.x &&
-        ypos >= rect.y &&
-        xpos <= rect.x+rect.w &&
-        ypos <= rect.y+rect.h
-    )
-        return true;
-    return false;
-}
-
-void Button::click_object(int button_id, bool click)
-{
-    if (click)
-    {
-        clicked = button_id;
-        onceclickevent(button_id, this);
-    }
-    else
-        clicked = -1;
-}
 
 void Button::set_text(std::string text)
 {
     int max = get_textures().end()->first;
     this->text = text;
     add_texturefile("button_text", max);
+    text_color = {255, 255, 255};
 }
 
-void Button::update()
+void Button::set_text(std::string text, vec3D text_color)
 {
-    if (clicked >= 0)
-        whileclickevent(clicked, this);
+    int max = get_textures().end()->first;
+    this->text_color = text_color;
+    this->text = text;
+    add_texturefile("button_text", max);
 }

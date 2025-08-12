@@ -1,6 +1,7 @@
 #ifndef GAME_MANAGER
 #define GAME_MANAGER
 
+#include <ctime>
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -8,9 +9,9 @@
 
 #include <SDL2/SDL.h>
 
-#include "game_object.h"
-#include "scene.h"
-#include "type_structs.h"
+#include <game_object.h>
+#include <scene.h>
+#include <type_structs.h>
 
 class GameManager
 {
@@ -20,6 +21,7 @@ private:
     std::unordered_map<std::string, Scene*> scenes;
     std::vector<Scene*> delete_scene_queue;
     bool opengl_init_complete;
+    time_t start_time;
 public:
     GameManager();
     ~GameManager();

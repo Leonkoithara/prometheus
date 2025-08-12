@@ -45,6 +45,7 @@ public:
 
     void add_game_object(GameObject*);
     void click_objects(int, int, int, bool);
+    void mouse_update_event(int, int);
     void process_keystroke(unsigned int, unsigned int, bool);
     void create_shader_program();
     void read_shader_code(std::string, enum SHADER_TYPE);
