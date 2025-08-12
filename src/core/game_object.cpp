@@ -6,19 +6,74 @@
 #include "game_object.h"
 
 
+void game_obj_empty_callback(GameObject *){};
+void game_obj_click_empty_callback(int x, GameObject *){};
 GameObject::GameObject(std::string nm)
 {
     name = nm;
     std::cout << "Game object: " << name << " created" << std::endl;
     position = {0, 0, 0};
     src_rect = {0, 0, 0, 0};
+    data_store_size = 0;
     start();
+    mouse_on = false;
+    mouseonobject = &game_obj_empty_callback;
+    mouseoffobject = &game_obj_empty_callback;
+    clicked = -1;
+    whileclickevent = &game_obj_click_empty_callback;
+    onceclickevent = &game_obj_click_empty_callback;
+}
+
+GameObject::GameObject(std::string name, unsigned int key, unsigned int mod) : GameObject(name)
+{
+    keycode_binding = key;
+    keycode_binding_mod = mod;
 }
 
 GameObject::~GameObject()
 {
     for (auto &t : tags)
         delete t.second;
+}
+
+bool GameObject::check_mouse_on(int xpos, int ypos)
+{
+    SDL_Rect rect = this->get_dest_render_rect();
+    if (
+        xpos >= rect.x &&
+        ypos >= rect.y &&
+        xpos <= rect.x+rect.w &&
+        ypos <= rect.y+rect.h
+    )
+    {
+        mouse_on = true;
+        return true;
+    }
+    if (mouse_on)
+    {
+        mouse_on = false;
+        mouseoffobject(this);
+    }
+    mouse_on = false;
+    return false;
+}
+
+void GameObject::update()
+{
+    if (clicked >= 0)
+        whileclickevent(clicked, this);
+}
+
+
+void GameObject::click_object(int button_id, bool click)
+{
+    if (click)
+    {
+        clicked = button_id;
+        onceclickevent(button_id, this);
+    }
+    else
+        clicked = -1;
 }
 
 void GameObject::set_render_rect_defaults()
