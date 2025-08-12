@@ -197,7 +197,7 @@ void WorldGen::populate_objects(Scene *prometheus)
             char go_name[15];
             terrain_count[terrain_matrix[i][j]]++;
             snprintf(go_name, 15, "%s_%d", terrain_name[terrain_matrix[i][j]], terrain_count[terrain_matrix[i][j]]);
-            Button *new_symbol = new Button(std::string(go_name));
+            GameObject *new_symbol = new GameObject(std::string(go_name));
             new_symbol->add_tag("terrain", texturefile_map[terrain_matrix[i][j]].c_str());
             new_symbol->add_tag("xpos", i);
             new_symbol->add_tag("ypos", j);
