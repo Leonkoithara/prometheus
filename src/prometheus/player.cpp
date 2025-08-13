@@ -12,7 +12,6 @@ void Player::spawn_player()
     Scene *player_scene = new Scene("player_scene");
     player_scene->create_window("Prometheus", 0, 0, 1000, 1000, {178, 255, 255}, false);
     gm.add_scene(player_scene);
-    gm.delete_scene("world_map");
 
     GameObject *ground = new GameObject("ground");
     ground->set_position({0, 500, 0});

@@ -1,9 +1,3 @@
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
-
 #include <button.h>
 #include <scene.h>
 #include <game_manager.h>

@@ -22,6 +22,7 @@ Scene::Scene(std::string scene_name)
 void Scene::create_window(std::string title, int xpos, int ypos, int width, int height, vec3D bg_color, bool full_screen)
 {
     int flags = 0;
+    std::cout << "Creating window: " << title << std::endl;
     if (full_screen)
         flags = SDL_WINDOW_FULLSCREEN | SDL_WINDOW_OPENGL;
     else

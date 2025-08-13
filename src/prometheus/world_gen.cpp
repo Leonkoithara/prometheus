@@ -4,6 +4,7 @@
 #include <scene.h>
 #include <world_gen.h>
 #include <character.h>
+#include <game_manager.h>
 
 
 terrain get_terrain(int *probablity_row)
@@ -224,6 +225,7 @@ void WorldGen::spawn_player()
 
 void create_first_submap(int x, GameObject *icon)
 {
+    gm.delete_scene("world_map");
     std::cout << "Clicked: " << icon->get_tag("terrain")->strval << ", at: " << icon->get_tag("xpos")->longval << "," << icon->get_tag("ypos")->longval << std::endl;
     world->set_terrain_elevation(icon->get_tag("xpos")->longval, icon->get_tag("ypos")->longval);
 
