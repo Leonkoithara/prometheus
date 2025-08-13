@@ -1,12 +1,14 @@
+#include <algorithm>
+
 #include <SDL_rect.h>
 #include <SDL_render.h>
 #include <SDL_ttf.h>
 #include <SDL_video.h>
 #include <GL/glew.h>
 
-#include "game_manager.h"
-#include "game_object.h"
-#include "scene.h"
+#include <game_manager.h>
+#include <game_object.h>
+#include <scene.h>
 
 
 GameManager gm;
@@ -23,7 +25,7 @@ GameManager::GameManager()
         exit(1);
     }
 
-    if(TTF_Init() < 0)
+    if (TTF_Init() < 0)
     {
         std::cout << "Couldn't initialize TTF lib: " << TTF_GetError() << std::endl;
         exit(1);
@@ -42,44 +44,48 @@ void GameManager::event_handler()
     SDL_PollEvent(&event);
     for (auto it : scenes)
     {
-        switch (event.type)
+        Scene *temp = NULL;
+        if (it.second->get_window_id() == event.window.windowID)
+            temp = it.second;
+        if (temp != NULL)
         {
-            Scene *temp;
-            case SDL_MOUSEBUTTONDOWN:
-                if(it.second->get_window_id() == event.window.windowID)
-                    temp = it.second;
-                temp->click_objects(event.button.x, event.button.y, event.button.button, true);
+            if (std::find(delete_scene_queue.begin(), delete_scene_queue.end(), temp) != delete_scene_queue.end())
+            {
+                std::cout << "Scene scheduled for deletion. Skipping..." << std::endl;
                 break;
-            case SDL_MOUSEBUTTONUP:
-                if(it.second->get_window_id() == event.window.windowID)
-                    temp = it.second;
-                temp->click_objects(event.button.x, event.button.y, event.button.button, false);
-                break;
-            case SDL_MOUSEMOTION:
-                if(it.second->get_window_id() == event.window.windowID)
-                    temp = it.second;
-                temp->mouse_update_event(event.motion.x, event.motion.y);
-                break;
-            case SDL_WINDOWEVENT:
-                // If last scene clean when SDL_QUIT event is triggered
-                if (scenes.size() == 1)
+            }
+            switch (event.type)
+            {
+                case SDL_MOUSEBUTTONDOWN:
+                    temp->click_objects(event.button.x, event.button.y, event.button.button, true);
                     break;
-                if(it.second->get_window_id() == event.window.windowID)
-                    temp = it.second;
-                switch (event.window.event)
-                {
-                    case SDL_WINDOWEVENT_CLOSE:
-                        delete_scene(temp->get_scene_name());
-                }
-                break;
-            case SDL_KEYDOWN:
-                if(it.second->get_window_id() == event.window.windowID)
-                    temp = it.second;
-                temp->process_keystroke(event.key.keysym.sym, event.key.keysym.mod, true);
-                break;
-            case SDL_QUIT:
-                quit();
-                break;
+                case SDL_MOUSEBUTTONUP:
+                    temp->click_objects(event.button.x, event.button.y, event.button.button, false);
+                    break;
+                case SDL_MOUSEMOTION:
+                    temp->mouse_update_event(event.motion.x, event.motion.y);
+                    break;
+                case SDL_WINDOWEVENT:
+                    // If last scene clean when SDL_QUIT event is triggered
+                    if (scenes.size() == 1)
+                        break;
+                    switch (event.window.event)
+                    {
+                        case SDL_WINDOWEVENT_CLOSE:
+                            delete_scene(temp->get_scene_name());
+                    }
+                    break;
+                case SDL_KEYDOWN:
+                    temp->process_keystroke(event.key.keysym.sym, event.key.keysym.mod, true);
+                    break;
+                case SDL_QUIT:
+                    quit();
+                    break;
+                case SDL_POLLSENTINEL:
+                    break;
+                default:
+                    std::cout << "Unhandled event: " << event.type << std::endl;
+            }
         }
     }
 }

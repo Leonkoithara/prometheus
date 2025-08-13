@@ -1,3 +1,4 @@
+#include <game_object.h>
 #include <button.h>
 #include <character.h>
 #include <game_manager.h>
@@ -9,25 +10,13 @@
 void Player::spawn_player()
 {
     Scene *player_scene = new Scene("player_scene");
-    player_scene->create_window("Prometheus", 0, 0, 1000, 1000, {0, 0, 0}, false);
+    player_scene->create_window("Prometheus", 0, 0, 1000, 1000, {178, 255, 255}, false);
     gm.add_scene(player_scene);
-    gm.delete_scene("world_map");
 
-    {
-        float position[] =
-        {
-            -0.5f, -0.5f,
-             0.5f, -0.5f,
-             0.0f,  0.5f
-        };
-        player_scene->set_vao(position, 6 * sizeof(float));
-        player_scene->read_shader_code("res/shaders/triangle.vert", VERTEX_SHADER);
-        player_scene->read_shader_code("res/shaders/triangle.frag", FRAGMENT_SHADER);
-        player_scene->create_shader_program();
-    }
+    GameObject *ground = new GameObject("ground");
+    ground->set_position({0, 500, 0});
+    ground->add_texturefile("res/textures/ground.png", 0);
+    ground->set_dest_render_props(0, 500, 500, 1000);
 
-    Button *create_world_button = new Button("create_world_button", 'n', KMOD_CTRL);
-    create_world_button->set_position({100, 100});
-    create_world_button->set_text("Create new World");
-    player_scene->add_game_object(create_world_button);
+    player_scene->add_game_object(ground);
 }

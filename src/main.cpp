@@ -8,9 +8,9 @@ int main(int argc, char *argv[])
 
     while (gm.get_running_stat())
     {
-        gm.event_handler();
         gm.update();
         gm.render();
+        gm.event_handler();
     }
 
     return 0;
