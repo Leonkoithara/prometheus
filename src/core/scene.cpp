@@ -2,16 +2,13 @@
 #include <fstream>
 #include <sstream>
 
-#include <SDL_image.h>
 #include <SDL_rect.h>
 #include <SDL_render.h>
-#include <SDL_ttf.h>
 
-#include "button.h"
-#include "camera.h"
-#include "game_manager.h"
-#include "game_object.h"
-#include "scene.h"
+#include <button.h>
+#include <game_manager.h>
+#include <game_object.h>
+#include <scene.h>
 
 Scene::Scene(std::string scene_name)
 {
@@ -104,38 +101,6 @@ void Scene::update()
     }
 }
 
-void Scene::set_game_obj_texture(GameObject *obj)
-{
-    for (auto texture : obj->get_textures())
-    {
-        if (texture.second.second == NULL)
-        {
-            SDL_Texture *tex;
-            if (texture.second.first == "button_text")
-            {
-                Button *butt = dynamic_cast<Button*>(obj);
-                TTF_Font *sans = TTF_OpenFont("res/fonts/FreeSans.ttf", 24);
-                const char *ttf_err = TTF_GetError();
-                if (std::strlen(ttf_err) != 0)
-                    std::cout << ttf_err << std::endl;
-                vec3D tmp = butt->get_text_color();
-                SDL_Color white = {static_cast<unsigned char>(tmp.x), static_cast<unsigned char>(tmp.y), static_cast<unsigned char>(tmp.z)};
-                SDL_Surface *msg_surface = TTF_RenderText_Solid(sans, butt->get_text().c_str(), white);
-                tex = SDL_CreateTextureFromSurface(renderer, msg_surface);
-            }
-            else
-            {
-                SDL_Surface *surface = IMG_Load(texture.second.first.c_str());
-                tex = SDL_CreateTextureFromSurface(renderer, surface);
-                SDL_FreeSurface(surface);
-            }
-            obj->add_texture(tex, texture.first);
-        }
-
-    }
-    obj->set_render_rect_defaults();
-}
-
 void Scene::set_vao(const void *vao_data, int size)
 {
     glCreateVertexArrays(1, &vao);
@@ -216,20 +181,15 @@ void Scene::render()
         
         for (auto it : game_objects)
         {
-            for (auto itr : it.second->get_textures())
-            {
-                if (itr.second.second == NULL)
-                {
-                    set_game_obj_texture(it.second);
-                    break;
-                }
-            }
             SDL_Rect src = it.second->get_src_render_rect();
-            SDL_Rect dest = cam.get_destination_rect(it.second->get_position(), src.h, src.w);
+            SDL_Rect dest = it.second->get_dest_render_rect();
 
-            auto textures = it.second->get_textures();
-            for (auto itr : textures)
-                SDL_RenderCopy(renderer, itr.second.second, &src, &dest);
+            auto surfaces = it.second->get_surfaces();
+            for (auto itr : surfaces)
+            {
+                SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, itr.second.second);
+                SDL_RenderCopy(renderer, texture, &src, &dest);
+            }
         }
 
         SDL_RenderFlush(renderer);

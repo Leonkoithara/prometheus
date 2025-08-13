@@ -36,15 +36,15 @@ Button::Button(std::string name, unsigned int key, unsigned int mod) : GameObjec
 
 void Button::set_text(std::string text)
 {
-    int max = get_textures().end()->first;
+    int max = get_surfaces().end()->first;
     this->text = text;
-    add_texturefile("button_text", max);
     text_color = {255, 255, 255};
+    add_texturefile("button_text", max);
 }
 
 void Button::set_text(std::string text, vec3D text_color)
 {
-    int max = get_textures().end()->first;
+    int max = get_surfaces().end()->first;
     this->text_color = text_color;
     this->text = text;
     add_texturefile("button_text", max);
