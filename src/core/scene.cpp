@@ -9,7 +9,6 @@
 #include <game_manager.h>
 #include <game_object.h>
 #include <scene.h>
-#include <utility>
 
 Scene::Scene(std::string scene_name)
 {
