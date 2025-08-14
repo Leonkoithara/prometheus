@@ -1,7 +1,7 @@
 #ifndef SCENE
 #define SCENE
 
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <GL/glew.h>
 
@@ -17,7 +17,8 @@ private:
     std::string name;
     bool update_scene;
     bool active_scene;
-    std::unordered_map<std::string, GameObject*> game_objects;
+    // int is the render order
+    std::map<int, std::pair<std::string, GameObject*>> game_objects;
     SDL_Renderer *renderer;
     SDL_Window *window;
     SDL_GLContext opengl_contxt;
@@ -43,7 +44,8 @@ public:
     std::string get_scene_name(){ return name; }
     int get_window_id() { return SDL_GetWindowID(window); }
 
-    void add_game_object(GameObject*);
+    // int is the render order
+    void add_game_object(int, GameObject*);
     void click_objects(int, int, int, bool);
     void mouse_update_event(int, int);
     void process_keystroke(unsigned int, unsigned int, bool);

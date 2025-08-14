@@ -205,7 +205,7 @@ void WorldGen::populate_objects(Scene *prometheus)
             new_symbol->set_onclickevent(create_first_submap);
             new_symbol->set_position({(float)25*i, (float)25*j});
             new_symbol->add_texturefile("res/textures/" + texturefile_map[terrain_matrix[i][j]] + ".png", 0);
-            prometheus->add_game_object(new_symbol);
+            prometheus->add_game_object((i*world_size)+j, new_symbol);
         }
     }
 

@@ -18,5 +18,10 @@ void Player::spawn_player()
     ground->add_texturefile("res/textures/ground.png", 0);
     ground->set_dest_render_props(0, 500, 500, 1000);
 
-    player_scene->add_game_object(ground);
+    GameObject *grass = new GameObject("grass");
+    grass->set_position({100, 600, 0});
+    grass->add_texturefile("res/textures/grass1.png", 0);
+
+    player_scene->add_game_object(0, ground);
+    player_scene->add_game_object(1, grass);
 }
