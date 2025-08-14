@@ -26,9 +26,9 @@ void create_main_menu()
     quit_game_button->set_text("Quit game");
     quit_game_button->set_onclickevent(&quit_game);
 
-    main_menu->add_game_object(title);
-    main_menu->add_game_object(create_world_button);
-    main_menu->add_game_object(quit_game_button);
+    main_menu->add_game_object(0, title);
+    main_menu->add_game_object(1, create_world_button);
+    main_menu->add_game_object(2, quit_game_button);
 
     gm.add_scene(main_menu);
 }

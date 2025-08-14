@@ -51,7 +51,7 @@ void Scene::click_objects(int xpos, int ypos, int button_id, bool click)
 {
     for (auto &it : game_objects )
     {
-        GameObject *obj = it.second;
+        GameObject *obj = it.second.second;
         if (obj->check_mouse_on(xpos, ypos))
             obj->click_object(button_id, click);
     }
@@ -61,7 +61,7 @@ void Scene::mouse_update_event(int xpos, int ypos)
 {
     for (auto &it : game_objects )
     {
-        GameObject *obj = it.second;
+        GameObject *obj = it.second.second;
         if (obj->check_mouse_on(xpos, ypos))
             obj->mouse_on_object();
     }
@@ -71,7 +71,7 @@ void Scene::process_keystroke(unsigned int key, unsigned int mod, bool down)
 {
     for (auto &it : game_objects )
     {
-        Button *obj = dynamic_cast<Button*>(it.second);
+        Button *obj = dynamic_cast<Button*>(it.second.second);
         if (obj == NULL)
             continue;
         if (obj->get_keycode_binding() == key)
@@ -85,12 +85,14 @@ void Scene::process_keystroke(unsigned int key, unsigned int mod, bool down)
     }
 }
 
-void Scene::add_game_object(GameObject *obj)
+void Scene::add_game_object(int render_order, GameObject *obj)
 {
     std::string game_obj_name = obj->get_name();
-    auto it = game_objects.find(game_obj_name);
+    auto it = game_objects.find(render_order);
     if (it == game_objects.end())
-        game_objects[game_obj_name] = obj;
+        game_objects[render_order] = std::pair<std::string, GameObject*>(game_obj_name, obj);
+    else
+        std::cout << "An object exists on this render order, verify render order or duplicated add obj call" << std::endl;
 }
 
 void Scene::update()
@@ -98,7 +100,7 @@ void Scene::update()
     if (update_scene)
     {
         for (auto &it : game_objects)
-            it.second->update();
+            it.second.second->update();
     }
 }
 
@@ -182,10 +184,10 @@ void Scene::render()
         
         for (auto it : game_objects)
         {
-            SDL_Rect src = it.second->get_src_render_rect();
-            SDL_Rect dest = it.second->get_dest_render_rect();
+            SDL_Rect src = it.second.second->get_src_render_rect();
+            SDL_Rect dest = it.second.second->get_dest_render_rect();
 
-            auto surfaces = it.second->get_surfaces();
+            auto surfaces = it.second.second->get_surfaces();
             for (auto itr : surfaces)
             {
                 SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, itr.second.second);
@@ -211,7 +213,7 @@ void Scene::render()
 Scene::~Scene()
 {
     for (auto &it : game_objects)
-        delete it.second;
+        delete it.second.second;
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
