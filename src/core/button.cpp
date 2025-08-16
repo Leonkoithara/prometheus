@@ -19,17 +19,23 @@ void change_bg_off_highlight(GameObject *button)
     butt->set_text(butt->get_text(), {255, 255, 255});
 }
 
-Button::Button(std::string name) : GameObject(name)
+Button::Button(std::string name, bool transparent) : GameObject(name)
 {
-    add_texturefile("res/textures/button.png", 0);
-    set_mouseonobject(change_bg_on_highlight);
-    set_mouseoffobject(change_bg_off_highlight);
+    if (!transparent)
+    {
+        add_texturefile("res/textures/button.png", 0);
+        set_mouseonobject(change_bg_on_highlight);
+        set_mouseoffobject(change_bg_off_highlight);
+    }
 }
-Button::Button(std::string name, unsigned int key, unsigned int mod) : GameObject(name, key, mod)
+Button::Button(std::string name, unsigned int key, unsigned int mod, bool transparent) : GameObject(name, key, mod)
 {
-    add_texturefile("res/textures/button.png", 0);
-    set_mouseonobject(change_bg_on_highlight);
-    set_mouseoffobject(change_bg_off_highlight);
+    if (!transparent)
+    {
+        add_texturefile("res/textures/button.png", 0);
+        set_mouseonobject(change_bg_on_highlight);
+        set_mouseoffobject(change_bg_off_highlight);
+    }
 }
 
 void Button::set_text(std::string text, vec3D text_color)
