@@ -1,5 +1,3 @@
-#include <chrono>
-
 #include <game_manager.h>
 #include <menu.h>
 
