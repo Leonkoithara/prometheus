@@ -94,6 +94,7 @@ void Scene::process_keystroke(unsigned int key, unsigned int mod, bool down)
 void Scene::add_game_object(int render_order, GameObject *obj)
 {
     std::string game_obj_name = obj->get_name();
+    // fps_counter obj must always be rendered last
     render_order++;
     auto it = game_objects.find(render_order);
     if (it == game_objects.end())
