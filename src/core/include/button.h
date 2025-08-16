@@ -11,14 +11,13 @@ private:
     std::string text;
     vec3D text_color;
 public:
-    Button(std::string);
-    Button(std::string, unsigned int, unsigned int = 0);
+    Button(std::string, bool = false);
+    Button(std::string, unsigned int, unsigned int = 0, bool = false);
 
     void start() {};
     void update() {};
 
-    void set_text(std::string);
-    void set_text(std::string, vec3D);
+    void set_text(std::string, vec3D color = {255, 255, 255});
 
     bool check_mouse_on(int, int);
 

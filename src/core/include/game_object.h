@@ -21,8 +21,6 @@ private:
     SDL_Rect dest_rect;
     std::map<int, std::pair<std::string, SDL_Surface*>> surfaces;
     std::map<std::string, tag*> tags;
-    void *data_store;
-    long data_store_size;
 protected:
     unsigned int keycode_binding;
     unsigned int keycode_binding_mod;

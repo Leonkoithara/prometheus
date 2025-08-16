@@ -1,3 +1,4 @@
+#include <string>
 #include <algorithm>
 
 #include <SDL_rect.h>
@@ -6,6 +7,7 @@
 #include <SDL_video.h>
 #include <GL/glew.h>
 
+#include <chrono>
 #include <game_manager.h>
 #include <game_object.h>
 #include <scene.h>
@@ -15,8 +17,8 @@ GameManager gm;
 
 GameManager::GameManager()
 {
-    start_time = time(NULL);
     opengl_init_complete = false;
+    previous_frame_duration = std::chrono::duration<float>(0);
     running = true;
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -30,6 +32,11 @@ GameManager::GameManager()
         std::cout << "Couldn't initialize TTF lib: " << TTF_GetError() << std::endl;
         exit(1);
     }
+
+    sans = TTF_OpenFont("res/fonts/FreeSans.ttf", 24);
+    const char *ttf_err = TTF_GetError();
+    if (std::strlen(ttf_err) != 0)
+        std::cout << ttf_err << std::endl;
 
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
@@ -88,10 +95,13 @@ void GameManager::event_handler()
             }
         }
     }
+    end = std::chrono::high_resolution_clock::now();
+    previous_frame_duration = end - start;
 }
 
 void GameManager::update()
 {
+    start = std::chrono::high_resolution_clock::now();
     while (!delete_scene_queue.empty())
     {
         Scene *scn = delete_scene_queue.back();
@@ -100,7 +110,10 @@ void GameManager::update()
         delete_scene_queue.pop_back();
     }
     for (auto &it : scenes)
+    {
+        it.second->get_fps_obj()->set_text(std::to_string(previous_frame_duration.count()));
         it.second->update();
+    }
 }
 
 void GameManager::render()
@@ -142,5 +155,6 @@ GameManager::~GameManager()
     for (auto &it : scenes)
         delete it.second;
     SDL_Quit();
+    TTF_Quit();
     std::cout << "Game cleaned" << std::endl;
 }

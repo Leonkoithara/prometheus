@@ -5,6 +5,7 @@
 #include <string>
 #include <GL/glew.h>
 
+#include <button.h>
 #include <game_object.h>
 #include <type_structs.h>
 
@@ -27,6 +28,7 @@ private:
     int gl_render_ready;
     std::string vertex_shader;
     std::string fragment_shader;
+    Button *fps_obj;
 public:
     Scene(std::string);
     ~Scene();
@@ -43,6 +45,7 @@ public:
     GameObject* get_scene_game_obj(std::string);
     std::string get_scene_name(){ return name; }
     int get_window_id() { return SDL_GetWindowID(window); }
+    Button* get_fps_obj() { return fps_obj; }
 
     // int is the render order
     void add_game_object(int, GameObject*);

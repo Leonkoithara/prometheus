@@ -1,13 +1,14 @@
 #ifndef GAME_MANAGER
 #define GAME_MANAGER
 
-#include <ctime>
+#include <chrono>
 #include <iostream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <game_object.h>
 #include <scene.h>
@@ -21,7 +22,10 @@ private:
     std::unordered_map<std::string, Scene*> scenes;
     std::vector<Scene*> delete_scene_queue;
     bool opengl_init_complete;
-    time_t start_time;
+    TTF_Font *sans;
+    std::chrono::time_point<std::chrono::system_clock> start;
+    std::chrono::time_point<std::chrono::system_clock> end;
+    std::chrono::duration<float> previous_frame_duration;
 public:
     GameManager();
     ~GameManager();
@@ -34,6 +38,8 @@ public:
     bool get_running_stat() { return running; }
     vec3D get_screen_size() { return screen_size; }
     Scene* get_scene_by_name(std::string);
+    float get_previous_frame_duration() { return previous_frame_duration.count(); }
+    TTF_Font* get_font() { return sans; }
 
     void add_scene(Scene*);
 

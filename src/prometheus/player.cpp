@@ -8,6 +8,21 @@
 
 #include <GL/glew.h>
 
+class Cloud : public GameObject
+{
+public:
+    Cloud(std::string name) : GameObject(name) {}
+    void update()
+    {
+        vec3D curr_pos = get_position();
+        curr_pos.x += 0.1;
+        if (curr_pos.x > 1800)
+            curr_pos.x = -200;
+
+        set_position(curr_pos);
+    }
+};
+
 
 void Player::spawn_player()
 {
@@ -40,7 +55,7 @@ void Player::spawn_player()
     {
         char cloud_name[15];
         sprintf(cloud_name, "cloud_%d", i);
-        GameObject *cloud = new GameObject(cloud_name);
+        Cloud *cloud = new Cloud(cloud_name);
         float cloud_x = rand()%1778;
         float cloud_y = rand()%400;
         cloud->set_position({cloud_x, cloud_y, 0});

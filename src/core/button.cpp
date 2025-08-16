@@ -1,4 +1,3 @@
-#include <SDL_rect.h>
 #include <SDL_surface.h>
 
 #include <button.h>
@@ -20,26 +19,23 @@ void change_bg_off_highlight(GameObject *button)
     butt->set_text(butt->get_text(), {255, 255, 255});
 }
 
-Button::Button(std::string name) : GameObject(name)
+Button::Button(std::string name, bool transparent) : GameObject(name)
 {
-    add_texturefile("res/textures/button.png", 0);
-    set_mouseonobject(change_bg_on_highlight);
-    set_mouseoffobject(change_bg_off_highlight);
+    if (!transparent)
+    {
+        add_texturefile("res/textures/button.png", 0);
+        set_mouseonobject(change_bg_on_highlight);
+        set_mouseoffobject(change_bg_off_highlight);
+    }
 }
-Button::Button(std::string name, unsigned int key, unsigned int mod) : GameObject(name, key, mod)
+Button::Button(std::string name, unsigned int key, unsigned int mod, bool transparent) : GameObject(name, key, mod)
 {
-    add_texturefile("res/textures/button.png", 0);
-    set_mouseonobject(change_bg_on_highlight);
-    set_mouseoffobject(change_bg_off_highlight);
-}
-
-
-void Button::set_text(std::string text)
-{
-    int max = get_surfaces().end()->first;
-    this->text = text;
-    text_color = {255, 255, 255};
-    add_texturefile("button_text", max);
+    if (!transparent)
+    {
+        add_texturefile("res/textures/button.png", 0);
+        set_mouseonobject(change_bg_on_highlight);
+        set_mouseoffobject(change_bg_off_highlight);
+    }
 }
 
 void Button::set_text(std::string text, vec3D text_color)
@@ -47,5 +43,12 @@ void Button::set_text(std::string text, vec3D text_color)
     int max = get_surfaces().end()->first;
     this->text_color = text_color;
     this->text = text;
-    add_texturefile("button_text", max);
+    std::string textfile = get_surfaces()[max-1].first;
+    if (textfile == "button_text")
+    {
+        SDL_FreeSurface(get_surfaces()[max-1].second);
+        add_texturefile("button_text", max-1);
+    }
+    else
+        add_texturefile("button_text", max);
 }
