@@ -7,6 +7,7 @@
 
 #include <button.h>
 #include <game_object.h>
+#include <game_manager.h>
 
 
 void game_obj_empty_callback(GameObject *){};
@@ -17,8 +18,6 @@ GameObject::GameObject(std::string nm)
     std::cout << "Game object: " << name << " created" << std::endl;
     position = {0, 0, 0};
     src_rect = {0, 0, 0, 0};
-    data_store_size = 0;
-    start();
     mouse_on = false;
     mouseonobject = &game_obj_empty_callback;
     mouseoffobject = &game_obj_empty_callback;
@@ -37,6 +36,10 @@ GameObject::~GameObject()
 {
     for (auto &t : tags)
         delete t.second;
+    for (auto &surface_map : surfaces)
+        SDL_FreeSurface(surface_map.second.second);
+
+    std::cout << "Destroyed object: " << name << std::endl;
 }
 
 bool GameObject::check_mouse_on(int xpos, int ypos)
@@ -129,6 +132,7 @@ void GameObject::set_dest_render_props(int dest_x1, int dest_y1, int h, int w)
 void GameObject::set_position(vec3D pos)
 {
     position = pos;
+    set_render_rect_defaults();
 }
 
 void GameObject::add_texturefile(std::string texturefile, int render_order)
@@ -167,13 +171,10 @@ void GameObject::set_surface()
             if (surface.second.first == "button_text")
             {
                 Button *butt = dynamic_cast<Button*>(this);
-                TTF_Font *sans = TTF_OpenFont("res/fonts/FreeSans.ttf", 24);
-                const char *ttf_err = TTF_GetError();
-                if (std::strlen(ttf_err) != 0)
-                    std::cout << ttf_err << std::endl;
+
                 vec3D tmp = butt->get_text_color();
-                SDL_Color white = {static_cast<unsigned char>(tmp.x), static_cast<unsigned char>(tmp.y), static_cast<unsigned char>(tmp.z)};
-                surf = TTF_RenderText_Solid(sans, butt->get_text().c_str(), white);
+                SDL_Color butt_color = {static_cast<unsigned char>(tmp.x), static_cast<unsigned char>(tmp.y), static_cast<unsigned char>(tmp.z)};
+                surf = TTF_RenderText_Solid(gm.get_font(), butt->get_text().c_str(), butt_color);
             }
             else
             {
@@ -183,5 +184,4 @@ void GameObject::set_surface()
         }
 
     }
-//    obj->set_render_rect_defaults();
 }

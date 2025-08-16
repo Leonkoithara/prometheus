@@ -1,5 +1,7 @@
-#include "game_manager.h"
-#include "menu.h"
+#include <chrono>
+
+#include <game_manager.h>
+#include <menu.h>
 
 
 int main(int argc, char *argv[])

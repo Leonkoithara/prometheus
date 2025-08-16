@@ -17,8 +17,7 @@ public:
     void start() {};
     void update() {};
 
-    void set_text(std::string);
-    void set_text(std::string, vec3D);
+    void set_text(std::string, vec3D color = {255, 255, 255});
 
     bool check_mouse_on(int, int);
 

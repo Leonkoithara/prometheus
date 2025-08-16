@@ -45,6 +45,12 @@ void Scene::create_window(std::string title, int xpos, int ypos, int width, int 
     opengl_contxt = SDL_GL_CreateContext(window);
     gm.init_opengl();
     active_scene = true;
+
+    Button *fps_counter = new Button("fps_counter", true);
+    fps_counter->set_text(std::to_string(gm.get_previous_frame_duration()));
+    fps_counter->set_position({0, 10, 0});
+    game_objects[0] = std::pair<std::string, GameObject*>("fps_counter", fps_counter);
+    fps_obj = fps_counter;
 }
 
 void Scene::click_objects(int xpos, int ypos, int button_id, bool click)
@@ -88,9 +94,13 @@ void Scene::process_keystroke(unsigned int key, unsigned int mod, bool down)
 void Scene::add_game_object(int render_order, GameObject *obj)
 {
     std::string game_obj_name = obj->get_name();
+    render_order++;
     auto it = game_objects.find(render_order);
     if (it == game_objects.end())
-        game_objects[render_order] = std::pair<std::string, GameObject*>(game_obj_name, obj);
+    {
+        game_objects[render_order] = game_objects[render_order-1];
+        game_objects[render_order-1] = std::pair<std::string, GameObject*>(game_obj_name, obj);
+    }
     else
         std::cout << "An object exists on this render order, verify render order or duplicated add obj call" << std::endl;
 }
@@ -192,6 +202,7 @@ void Scene::render()
             {
                 SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, itr.second.second);
                 SDL_RenderCopy(renderer, texture, &src, &dest);
+                SDL_DestroyTexture(texture);
             }
         }
 
@@ -217,4 +228,5 @@ Scene::~Scene()
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    std::cout << "Destroy scene: " << name << std::endl;
 }

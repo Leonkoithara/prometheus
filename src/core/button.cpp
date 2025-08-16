@@ -1,4 +1,3 @@
-#include <SDL_rect.h>
 #include <SDL_surface.h>
 
 #include <button.h>
@@ -33,19 +32,17 @@ Button::Button(std::string name, unsigned int key, unsigned int mod) : GameObjec
     set_mouseoffobject(change_bg_off_highlight);
 }
 
-
-void Button::set_text(std::string text)
-{
-    int max = get_surfaces().end()->first;
-    this->text = text;
-    text_color = {255, 255, 255};
-    add_texturefile("button_text", max);
-}
-
 void Button::set_text(std::string text, vec3D text_color)
 {
     int max = get_surfaces().end()->first;
     this->text_color = text_color;
     this->text = text;
-    add_texturefile("button_text", max);
+    std::string textfile = get_surfaces()[max-1].first;
+    if (textfile == "button_text")
+    {
+        SDL_FreeSurface(get_surfaces()[max-1].second);
+        add_texturefile("button_text", max-1);
+    }
+    else
+        add_texturefile("button_text", max);
 }
