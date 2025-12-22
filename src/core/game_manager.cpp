@@ -5,7 +5,6 @@
 #include <SDL_render.h>
 #include <SDL_ttf.h>
 #include <SDL_video.h>
-#include <GL/glew.h>
 
 #include <chrono>
 #include <game_manager.h>
@@ -17,7 +16,6 @@ GameManager gm;
 
 GameManager::GameManager()
 {
-    opengl_init_complete = false;
     previous_frame_duration = std::chrono::duration<float>(0);
     running = true;
 
@@ -72,21 +70,20 @@ void GameManager::event_handler()
                 case SDL_MOUSEMOTION:
                     temp->mouse_update_event(event.motion.x, event.motion.y);
                     break;
-                case SDL_WINDOWEVENT:
-                    // If last scene clean when SDL_QUIT event is triggered
-                    if (scenes.size() == 1)
-                        break;
-                    switch (event.window.event)
-                    {
-                        case SDL_WINDOWEVENT_CLOSE:
-                            delete_scene(temp->get_scene_name());
-                    }
-                    break;
                 case SDL_KEYDOWN:
                     temp->process_keystroke(event.key.keysym.sym, event.key.keysym.mod, true);
                     break;
                 case SDL_QUIT:
                     quit();
+                    break;
+                case SDL_WINDOWEVENT:
+                    switch (event.window.event)
+                    {
+                        case SDL_WINDOWEVENT_CLOSE:
+                            delete_scene(temp->get_scene_name());
+                            if (scenes.size() == 1)
+                                quit();
+                    }
                     break;
                 case SDL_POLLSENTINEL:
                     break;

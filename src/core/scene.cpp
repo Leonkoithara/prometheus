@@ -15,8 +15,6 @@ Scene::Scene(std::string scene_name)
     name = scene_name;
     update_scene = true;
     active_scene = true;
-    vao = 0;
-    gl_render_ready = 0;
 }
 
 void Scene::create_window(std::string title, int xpos, int ypos, int width, int height, vec3D bg_color, bool full_screen)
@@ -42,8 +40,6 @@ void Scene::create_window(std::string title, int xpos, int ypos, int width, int 
         exit(1);
     }
     SDL_SetRenderDrawColor(renderer, bg_color.x, bg_color.y, bg_color.z, 255);
-    opengl_contxt = SDL_GL_CreateContext(window);
-    gm.init_opengl();
     active_scene = true;
 
     Button *fps_counter = new Button("fps_counter", true);
@@ -115,78 +111,6 @@ void Scene::update()
     }
 }
 
-void Scene::set_vao(const void *vao_data, int size)
-{
-    glCreateVertexArrays(1, &vao);
-    glBindVertexArray( vao );
-    unsigned int buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ARRAY_BUFFER, size, vao_data, GL_STATIC_DRAW);
-    gl_render_ready |= 1;
-}
-
-void Scene::read_shader_code(std::string filename, enum SHADER_TYPE type)
-{
-    std::ifstream t(filename);
-    std::stringstream buffer;
-    buffer << t.rdbuf();
-    
-    if(type == VERTEX_SHADER)
-        vertex_shader = buffer.str();
-    else if (type == FRAGMENT_SHADER)
-        fragment_shader = buffer.str();
-    else
-        std::cout << "Invalid shader type" << std::endl;
-}
-
-void Scene::create_shader_program()
-{
-    shader_program = glCreateProgram();
-    const char* src_v = vertex_shader.c_str();
-    const char* src_f = fragment_shader.c_str();
-
-    unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vs, 1, &src_v, NULL);
-    glCompileShader(vs);
-
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vs, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fs, 1, &src_f, NULL);
-    glCompileShader(fs);
-
-    glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fs, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    glAttachShader(shader_program, vs);
-    glAttachShader(shader_program, fs);
-    glLinkProgram(shader_program);
-
-    glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetProgramInfoLog(shader_program, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-    glUseProgram(shader_program);
-    glDeleteShader(vs);
-    glDeleteShader(fs);
-
-    gl_render_ready |= 2;
-}
-
 void Scene::render()
 {
     if (active_scene)
@@ -208,16 +132,6 @@ void Scene::render()
         }
 
         SDL_RenderFlush(renderer);
-
-        if (gl_render_ready == 3)
-        {
-            SDL_GL_MakeCurrent(window, opengl_contxt);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-        }
-
         SDL_RenderPresent(renderer);
     }
 }
