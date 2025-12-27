@@ -38,8 +38,8 @@ GameManager::GameManager()
 
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
-    float width = DM.w;
-    float height = DM.h;
+    long width = DM.w;
+    long height = DM.h;
     screen_size = { width, height, 0};
 }
 

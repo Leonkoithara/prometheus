@@ -5,6 +5,7 @@
 #include <world_gen.h>
 #include <character.h>
 #include <game_manager.h>
+#include <playing_area.h>
 
 
 terrain get_terrain(int *probablity_row)
@@ -182,7 +183,7 @@ void WorldGen::set_terrain_matrix()
     }
 }
 
-void WorldGen::populate_objects(Scene *prometheus)
+void WorldGen::populate_overmap_symbols(Scene *prometheus)
 {
     int terrain_count[6] = {0, 0, 0, 0, 0};                                                   // Count in map for each terrain
     std::string texturefile_map[6] = {
@@ -203,13 +204,20 @@ void WorldGen::populate_objects(Scene *prometheus)
             new_symbol->add_tag("xpos", i);
             new_symbol->add_tag("ypos", j);
             new_symbol->set_onclickevent(create_first_submap);
-            new_symbol->set_position({(float)25*i, (float)25*j});
+            new_symbol->set_position({25*i, 25*j});
             new_symbol->add_texturefile("res/textures/" + texturefile_map[terrain_matrix[i][j]] + ".png", 0);
             prometheus->add_game_object((i*world_size)+j, new_symbol);
         }
     }
 
     std::cout << "Finished populating map objects" << std::endl;
+}
+
+void WorldGen::create_playing_area()
+{
+    playing_area = new PlayingArea("playing_area");
+    playing_area->create_window("Playing Area", 0, 0, 1778, 1000, {0, 125, 0}, false);
+    gm.add_scene(playing_area);
 }
 
 void WorldGen::create_player()
@@ -227,7 +235,11 @@ void create_first_submap(int x, GameObject *icon)
 {
     gm.delete_scene("world_map");
     std::cout << "Clicked: " << icon->get_tag("terrain")->strval << ", at: " << icon->get_tag("xpos")->longval << "," << icon->get_tag("ypos")->longval << std::endl;
-    world->set_terrain_elevation(icon->get_tag("xpos")->longval, icon->get_tag("ypos")->longval);
+
+    world->create_playing_area();
+
+    world->set_submap_terrain_elevation(icon->get_tag("xpos")->longval, icon->get_tag("ypos")->longval);
+    world->populate_submap_terrain(icon->get_tag("xpos")->longval, icon->get_tag("ypos")->longval);
 
     world->create_player();
     world->spawn_player();

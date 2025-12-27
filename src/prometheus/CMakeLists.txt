@@ -9,7 +9,7 @@ include_directories(${OPENGL_INCLUDE_DIRS})
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
-add_library(prometheus OBJECT menu.cpp world_gen.cpp start_world_gen.cpp submap_gen.cpp player.cpp)
+add_library(prometheus OBJECT menu.cpp world_gen.cpp start_world_gen.cpp submap_gen.cpp player.cpp playing_area.cpp)
 
 target_include_directories(
   prometheus

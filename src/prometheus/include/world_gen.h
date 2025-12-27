@@ -1,5 +1,6 @@
 #ifndef WORLDGEN
 #define WORLDGEN
+#include <type_structs.h>
 #include <iostream>
 
 #include <game_object.h>
@@ -39,6 +40,7 @@ private:
     bool **submap_generated_flag;
     int ***probablity_matrix;
     Player *player;
+    Scene *playing_area;
 
 public:
     WorldGen(int, std::string);
@@ -47,8 +49,24 @@ public:
 
     void set_terrain_matrix();
     void modify_probablities(int, int, int, terrain);
-    void populate_objects(Scene*);
-    void set_terrain_elevation(long, long);
+    void populate_overmap_symbols(Scene*);
+    void create_playing_area();
+    void set_submap_terrain_elevation(long, long);
+    void populate_submap_terrain(long, long);
+
+    vec3D convert_screenxy_to_xy(long x, long y)
+    {
+        long retx = ONE_BY_ROOT_TWO * (x + y - 889);
+        long rety = ONE_BY_ROOT_TWO * (y - x + 889);
+        return {retx, rety, 0};
+    }
+    vec3D convert_xy_to_screenxy(long x, long y)
+    {
+        long retx = ONE_BY_ROOT_TWO * (x - y) + 889;
+        long rety = ONE_BY_ROOT_TWO * (x + y);
+        return {retx, rety, 0};
+    }
+
     void create_player();
     void spawn_player();
 };

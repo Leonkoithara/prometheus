@@ -14,7 +14,7 @@ void create_new_world(Scene *prometheus, std::string world_name, int world_size)
     world = new WorldGen(world_size, world_name);
 
     world->set_terrain_matrix();
-    world->populate_objects(prometheus);
+    world->populate_overmap_symbols(prometheus);
 }
 
 void start_create_world(int x, GameObject *)
