@@ -104,7 +104,7 @@ void Scene::add_game_object(int render_order, GameObject *obj)
 
 void Scene::update()
 {
-    if (update_scene)
+    if (is_updating())
     {
         for (auto &it : game_objects)
             it.second.second->update();
@@ -113,7 +113,7 @@ void Scene::update()
 
 void Scene::render()
 {
-    if (active_scene)
+    if (is_active())
     {
         SDL_RenderClear(renderer);
         

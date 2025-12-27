@@ -18,18 +18,20 @@ private:
     std::string name;
     bool update_scene;
     bool active_scene;
+    SDL_Window *window;
+    Button *fps_obj;
+protected:
     // int is the render order
     std::map<int, std::pair<std::string, GameObject*>> game_objects;
     SDL_Renderer *renderer;
-    SDL_Window *window;
-    Button *fps_obj;
 public:
     Scene(std::string);
     ~Scene();
 
     void create_window(std::string, int, int, int, int, vec3D, bool);
-    void update();
-    void render();
+
+    virtual void update();
+    virtual void render();
 
     void set_active_scene(bool active) { active_scene = active; }
     void set_update_scene(bool update) { update_scene = update; }
@@ -39,6 +41,8 @@ public:
     std::string get_scene_name(){ return name; }
     int get_window_id() { return SDL_GetWindowID(window); }
     Button* get_fps_obj() { return fps_obj; }
+    bool is_updating() { return update_scene; }
+    bool is_active() { return active_scene; }
 
     // int is the render order
     void add_game_object(int, GameObject*);
