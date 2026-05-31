@@ -59,13 +59,18 @@ void Scene::click_objects(int xpos, int ypos, int button_id, bool click)
     }
 }
 
-void Scene::mouse_update_event(int xpos, int ypos)
+void Scene::mouse_update_event()
 {
-    for (auto &it : game_objects )
-    {
-        GameObject *obj = it.second.second;
-        if (obj->check_mouse_on(xpos, ypos))
-            obj->mouse_on_object();
+    if (gm.get_mouse_event_processed() > 0)
+	{
+        int xpos = gm.get_mouse_x(); int ypos = gm.get_mouse_y();
+
+        for (auto &it : game_objects )
+        {
+            GameObject *obj = it.second.second;
+            if (obj->check_mouse_on(xpos, ypos))
+                obj->mouse_on_object();
+        }
     }
 }
 
@@ -108,6 +113,7 @@ void Scene::update()
     {
         for (auto &it : game_objects)
             it.second.second->update();
+        mouse_update_event();
     }
 }
 
