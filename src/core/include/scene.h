@@ -47,7 +47,7 @@ public:
     // int is the render order
     void add_game_object(int, GameObject*);
     void click_objects(int, int, int, bool);
-    void mouse_update_event(int, int);
+    void mouse_update_event();
     void process_keystroke(unsigned int, unsigned int, bool);
 };
 

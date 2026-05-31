@@ -41,54 +41,59 @@ GameManager::GameManager()
     long width = DM.w;
     long height = DM.h;
     screen_size = { width, height, 0};
+    mouse_event_processed = 0;
 }
 
 void GameManager::event_handler()
 {
     SDL_Event event;
-    SDL_PollEvent(&event);
-    for (auto it : scenes)
+
+    while (SDL_PollEvent(&event))
     {
-        Scene *temp = NULL;
-        if (it.second->get_window_id() == event.window.windowID)
-            temp = it.second;
-        if (temp != NULL)
+        for (auto it : scenes)
         {
-            if (std::find(delete_scene_queue.begin(), delete_scene_queue.end(), temp) != delete_scene_queue.end())
+            Scene *temp = NULL;
+            if (it.second->get_window_id() == event.window.windowID)
+                temp = it.second;
+            if (temp != NULL)
             {
-                std::cout << "Scene scheduled for deletion. Skipping..." << std::endl;
-                break;
-            }
-            switch (event.type)
-            {
-                case SDL_MOUSEBUTTONDOWN:
-                    temp->click_objects(event.button.x, event.button.y, event.button.button, true);
+                if (std::find(delete_scene_queue.begin(), delete_scene_queue.end(), temp) != delete_scene_queue.end())
+                {
+                    std::cout << "Scene scheduled for deletion. Skipping..." << std::endl;
                     break;
-                case SDL_MOUSEBUTTONUP:
-                    temp->click_objects(event.button.x, event.button.y, event.button.button, false);
-                    break;
-                case SDL_MOUSEMOTION:
-                    temp->mouse_update_event(event.motion.x, event.motion.y);
-                    break;
-                case SDL_KEYDOWN:
-                    temp->process_keystroke(event.key.keysym.sym, event.key.keysym.mod, true);
-                    break;
-                case SDL_QUIT:
-                    quit();
-                    break;
-                case SDL_WINDOWEVENT:
-                    switch (event.window.event)
-                    {
-                        case SDL_WINDOWEVENT_CLOSE:
-                            delete_scene(temp->get_scene_name());
-                            if (scenes.size() == 1)
-                                quit();
-                    }
-                    break;
-                case SDL_POLLSENTINEL:
-                    break;
-                default:
-                    std::cout << "Unhandled event: " << event.type << std::endl;
+                }
+                switch (event.type)
+                {
+                    case SDL_MOUSEBUTTONDOWN:
+                        temp->click_objects(event.button.x, event.button.y, event.button.button, true);
+                        break;
+                    case SDL_MOUSEBUTTONUP:
+                        temp->click_objects(event.button.x, event.button.y, event.button.button, false);
+                        break;
+                    case SDL_MOUSEMOTION:
+                        set_mouse_position(event.motion.x, event.motion.y);
+                        mouse_event_processed += scenes.size();
+                        break;
+                    case SDL_KEYDOWN:
+                        temp->process_keystroke(event.key.keysym.sym, event.key.keysym.mod, true);
+                        break;
+                    case SDL_QUIT:
+                        quit();
+                        break;
+                    case SDL_WINDOWEVENT:
+                        switch (event.window.event)
+                        {
+                            case SDL_WINDOWEVENT_CLOSE:
+                                delete_scene(temp->get_scene_name());
+                                if (scenes.size() == 1)
+                                    quit();
+                        }
+                        break;
+                    case SDL_POLLSENTINEL:
+                        break;
+                    default:
+                        std::cout << "Unhandled event: " << event.type << std::endl;
+                }
             }
         }
     }

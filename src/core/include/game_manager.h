@@ -19,6 +19,9 @@ class GameManager
 private:
     bool running;
     vec3D screen_size;
+    int mouse_x;
+    int mouse_y;
+    int mouse_event_processed;
     std::unordered_map<std::string, Scene*> scenes;
     std::vector<Scene*> delete_scene_queue;
     TTF_Font *sans;
@@ -39,6 +42,13 @@ public:
     Scene* get_scene_by_name(std::string);
     float get_previous_frame_duration() { return previous_frame_duration.count(); }
     TTF_Font* get_font() { return sans; }
+    int get_mouse_x() { mouse_event_processed--; return mouse_x; }
+    int get_mouse_y() { return mouse_y; }
+    int get_mouse_event_processed() { return mouse_event_processed; }
+
+
+    void set_mouse_position(int x, int y) { mouse_x = x; mouse_y = y; }
+    void scene_mouse_event_processed() { mouse_event_processed++; }
 
     void add_scene(Scene*);
 
